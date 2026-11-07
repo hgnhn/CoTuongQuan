@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cờ Tướng Quân</title>
+  <meta name="description" content="Cờ tướng với đội hình tuỳ chỉnh: trang bị perk cho từng loại quân rồi vào trận.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&text=%E5%B8%A5%E4%BB%95%E7%9B%B8%E4%BF%A5%E7%82%AE%E5%82%8C%E5%85%B5%E5%B0%87%E5%A3%AB%E8%B1%A1%E8%BB%8A%E7%A0%B2%E9%A6%AC%E5%8D%92%E6%A5%9A%E6%B2%B3%E6%BC%A2%E7%95%8C&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="canonical" href="https://cotuongquan.bananalab.id.vn/">
+  <meta property="og:title" content="Cờ Tướng Quân">
+  <meta property="og:description" content="Cờ tướng với đội hình tuỳ chỉnh: trang bị perk cho từng loại quân rồi vào trận.">
+</head>
+<body>
+  <!-- ============ MENU CHÍNH ============ -->
+  <main id="screen-menu" class="screen is-active" aria-labelledby="game-title">
+    <div class="menu">
+      <div class="account" id="account"></div>
+      <div class="invite-banner" id="invite-banner" hidden></div>
+      <header class="menu-head">
+        <h1 id="game-title" class="title">Cờ Tướng Quân</h1>
+        <p class="tagline">Cờ tướng, nhưng mỗi loại quân mang một tuyệt kỹ do bạn chọn.</p>
+      </header>
+
+      <nav class="menu-list" aria-label="Menu chính">
+        <button class="menu-item" data-action="online">
+          <span class="mi-name">Chơi trực tuyến</span>
+          <span class="mi-desc">Tạo phòng, gửi mã cho bạn bè và đấu trực tiếp.</span>
+        </button>
+        <button class="menu-item" data-action="ai">
+          <span class="mi-name">Đấu với máy</span>
+          <span class="mi-desc">Luyện đội hình với ba cấp độ, máy mang perk ngẫu nhiên.</span>
+        </button>
+        <button class="menu-item" data-action="local">
+          <span class="mi-name">Hai người một máy</span>
+          <span class="mi-desc">Thay phiên nhau đi trên cùng một màn hình.</span>
+        </button>
+        <button class="menu-item" data-action="army">
+          <span class="mi-name">Đội hình</span>
+          <span class="mi-desc">Chọn perk cho từng loại quân trước khi ra trận.</span>
+        </button>
+        <button class="menu-item" data-action="rules">
+          <span class="mi-name">Luật chơi</span>
+          <span class="mi-desc">Cách đi của từng quân và toàn bộ perk.</span>
+        </button>
+      </nav>
+
+      <section class="menu-army" aria-label="Đội hình hiện tại">
+        <div class="menu-army-head">
+          <h2>Đội hình của bạn</h2>
+          <button class="link-btn" data-action="army">Chỉnh sửa</button>
+        </div>
+        <ul id="menu-perk-list" class="perk-summary"></ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============ ĐĂNG NHẬP ============ -->
+  <main id="screen-login" class="screen" aria-labelledby="login-title">
+    <header class="bar">
+      <button class="ghost-btn" data-action="menu">Về sảnh</button>
+      <span></span><span></span>
+    </header>
+    <div class="login">
+      <h1 id="login-title" class="login-title">Đăng nhập</h1>
+      <p class="login-reason" id="login-reason">Đăng nhập để chơi trực tuyến và gửi link mời đối thủ.</p>
+      <div id="login-google" hidden>
+        <button class="primary-btn wide" id="btn-google">Đăng nhập với Google</button>
+      </div>
+      <form id="login-local" class="login-form" hidden>
+        <label class="field">Tên kỳ thủ<input id="login-name" maxlength="20" autocomplete="nickname" placeholder="Ví dụ: Quân Sư Họ Hoàng" required></label>
+        <button class="primary-btn wide" type="submit">Đăng nhập</button>
+        <p class="muted">Tài khoản được lưu trên trình duyệt này.</p>
+      </form>
+      <p class="login-error" id="login-error" role="alert"></p>
+    </div>
+  </main>
+
+  <!-- ============ ĐỘI HÌNH ============ -->
+  <main id="screen-army" class="screen" aria-labelledby="army-title">
+    <header class="bar">
+      <button class="ghost-btn" data-action="menu">Về menu</button>
+      <h1 id="army-title" class="bar-title">Đội hình</h1>
+      <div class="seg" role="tablist" aria-label="Chọn đội">
+        <button role="tab" class="seg-btn is-on" data-army-slot="main" aria-selected="true">Đội của bạn</button>
+        <button role="tab" class="seg-btn" data-army-slot="p2" aria-selected="false">Người chơi 2</button>
+      </div>
+    </header>
+    <div class="army-layout">
+      <section class="army-board-wrap">
+        <p class="hint">Chạm vào một quân trên bàn để chọn perk cho cả loại quân đó. Đội hình được khoá khi trận bắt đầu, nên hãy chọn xong ở đây.</p>
+        <div id="army-board" class="board"></div>
+        <div class="army-tools">
+          <button class="ghost-btn" id="army-random">Ngẫu nhiên</button>
+          <button class="ghost-btn" id="army-reset">Về mặc định</button>
+        </div>
+      </section>
+      <section class="perk-panel" aria-live="polite">
+        <div class="type-strip" id="type-strip" role="tablist" aria-label="Loại quân"></div>
+        <div class="perk-head">
+          <span class="perk-head-glyph" id="perk-head-glyph"></span>
+          <div>
+            <h2 id="perk-head-name"></h2>
+            <p id="perk-head-base" class="muted"></p>
+          </div>
+        </div>
+        <div id="perk-options" class="perk-options" role="radiogroup"></div>
+        <div class="demo">
+          <div id="demo-board" class="board board-mini"></div>
+          <div class="demo-legend">
+            <p><span class="dot dot-base"></span> Nước đi gốc</p>
+            <p><span class="dot dot-perk"></span> Nước đi perk mở thêm</p>
+            <p><span class="dot dot-lost"></span> Nước đi perk chặn lại</p>
+            <p id="demo-note" class="muted"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============ TRẬN ĐẤU ============ -->
+  <main id="screen-game" class="screen" aria-label="Trận đấu">
+    <div class="game-layout">
+      <section class="game-board-wrap">
+        <div class="player-card" id="card-top"></div>
+        <div id="game-board" class="board board-game"></div>
+        <div class="player-card" id="card-bottom"></div>
+      </section>
+      <aside class="game-side">
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+        <div class="piece-info" id="piece-info"></div>
+        <h2 class="side-h">Diễn biến</h2>
+        <ol class="moves" id="move-list"></ol>
+        <div class="game-actions">
+          <button class="ghost-btn" id="btn-undo">Đi lại</button>
+          <button class="ghost-btn" id="btn-flip">Xoay bàn</button>
+          <button class="ghost-btn" id="btn-resign">Đầu hàng</button>
+          <button class="ghost-btn" id="btn-leave">Về menu</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ============ LUẬT CHƠI ============ -->
+  <main id="screen-rules" class="screen" aria-labelledby="rules-title">
+    <header class="bar">
+      <button class="ghost-btn" data-action="menu">Về menu</button>
+      <h1 id="rules-title" class="bar-title">Luật chơi</h1>
+      <span></span>
+    </header>
+    <article class="rules">
+      <p>Luật cờ tướng chuẩn được giữ nguyên: chiếu bí hoặc vây cho đối thủ hết nước đi là thắng, hai Tướng không được đối mặt trên cột trống. Trước trận, mỗi người chọn đúng một perk cho mỗi loại quân. Perk áp dụng cho tất cả quân cùng loại, và cả hai bên đều nhìn thấy perk của nhau.</p>
+      <p>Lặp lại cùng một thế cờ ba lần thì hoà, trừ khi một bên liên tục chiếu trong suốt vòng lặp: bên chiếu dai bị xử thua. Sau 60 nước mỗi bên không có quân nào bị ăn, ván cờ hoà.</p>
+      <div id="rules-list"></div>
+    </article>
+  </main>
+
+  <!-- ============ HỘP THOẠI ============ -->
+  <dialog id="dlg" class="dlg">
+    <form method="dialog" id="dlg-body"></form>
+  </dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/board-view.js"></script>
+  <script src="js/net.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -243,9 +243,9 @@
             } else {
               if (q) {
                 // Song Ngòi: không ăn (chiếu) Tướng qua 2 ngòi
-                if (screens === 1 || perk === 'c_songngoi') {
-                  if (canCapture(state, p, q, to) && !(screens === 2 && q.t === 'K')) out.push({ from, to });
-                }
+                // Song Ngòi không chiếu qua 2 ngòi; Pháo Chéo không chiếu theo đường chéo
+                const noCheck = q.t === 'K' && (screens === 2 || (dr !== 0 && dc !== 0));
+                if ((screens === 1 || perk === 'c_songngoi') && !noCheck && canCapture(state, p, q, to)) out.push({ from, to });
                 screens++;
                 if (screens > maxScreens) break;
               }

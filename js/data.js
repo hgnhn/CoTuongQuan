@@ -68,7 +68,7 @@
       { id: 'c_canchien', name: 'Cận Chiến',
         desc: 'Pháo được ăn thẳng quân địch đứng sát bên (ngang/dọc), không cần ngòi. Không áp dụng với Tướng.' },
       { id: 'c_phaocheo', name: 'Pháo Chéo',
-        desc: 'Pháo được đi và ăn theo cả đường chéo, theo đúng cách của Pháo.' },
+        desc: 'Pháo được đi và ăn theo cả đường chéo, theo đúng cách của Pháo. Đường chéo không dùng để chiếu Tướng.' },
     ],
     H: [
       { id: 'h_thienly', name: 'Thiên Lý Mã',

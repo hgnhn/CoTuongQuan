@@ -47,3 +47,61 @@
 - **Ô Truy**: bị cản nếu 2 ô thẳng đầu tiên có quân.
 - **Rút Lui**: thay bằng **Liên Hoàn**, Tốt có Tốt mình đứng sát ngang thì Xe, Mã, Pháo không ăn được.
 - **Thăng Cấp**: phong Xe khi tới 2 hàng cuối của địch (thay vì chỉ hàng cuối).
+
+## Đợt 2–7 (32–40 ván/perk)
+
+Các đợt sau chỉ đo lại những perk vừa chỉnh. Điều chỉnh đáng chú ý nhất là thêm **điểm an toàn Tướng** vào AI (trừ điểm khi Tướng rời hàng cuối): trước đó AI hay đưa Tướng ra khỏi chỗ an toàn, khiến mọi perk tăng cơ động cho Tướng bị đo thấp hơn thực tế.
+
+| Đợt | Thay đổi | Kết quả |
+|-----|----------|---------|
+| 2 | Chiến Xa, Chiến Mã chỉ bước tới ô trống | Chiến Xa 0.52, Chiến Mã 0.44 (nerf quá tay) |
+| 2 | Pháo Xa: ngòi phải là quân mình | 0.77, vẫn mạnh |
+| 2 | Ô Truy bị cản 2 ô đầu | 0.80, vẫn mạnh |
+| 3 | Pháo Xa chỉ theo hàng dọc | 0.55 |
+| 3 | Ô Truy chỉ nhảy dài theo chiều dọc | 0.72 |
+| 3 | Chiến Mã được ăn khi tiến thẳng | 0.75 |
+| 3 | Kim Cương miễn nhiễm thêm Mã; Tuần Tra đi khắp bàn | 0.59; 0.55 |
+| 4 | Linh Hoạt trả lại khả năng ăn ngang | 0.68 |
+| 4 | Cận Chiến không chiếu Tướng | 0.68 |
+| 5 | AI có điểm an toàn Tướng; Ngự Giá chỉ giữ uy lực lộ mặt tướng | Bát Quái 0.57, Khinh Công 0.54, Ngự Giá 0.50, Kim Thiền 0.56 |
+| 5 | Thay Pháo Bay (0.50–0.59, yếu dai dẳng) bằng Pháo Chéo | 0.93, quá mạnh |
+| 6 | Pháo Chéo không chiếu theo đường chéo | 0.78 |
+| 7 | Pháo Chéo tầm chéo tối đa 3 ô | 0.60 |
+
+## Bảng hiện tại
+
+Điểm của bên có perk khi đấu với bên không perk (0.5 = không tạo khác biệt). Số liệu của phiên bản perk mới nhất, sai số khoảng ±0.08.
+
+| Quân | Perk | Điểm |
+|------|------|-----:|
+| Tướng | Bát Quái Bộ | 0.57 |
+| Tướng | Khinh Công | 0.54 |
+| Tướng | Ngự Giá Thân Chinh | 0.50 |
+| Tướng | Kim Thiền Thoát Xác (3 lần) | 0.56 |
+| Sĩ | Cận Vệ | 0.59 |
+| Sĩ | Tuần Tra | 0.55 |
+| Sĩ | Kim Cương | 0.59 |
+| Sĩ | Tử Sĩ | 0.58 |
+| Tượng | Vượt Giang | 0.55 |
+| Tượng | Voi Chiến | 0.54 |
+| Tượng | Tiểu Bộ | 0.47 |
+| Xe | Thiết Giáp | 0.60 |
+| Xe | Chiến Xa | 0.45–0.56 |
+| Xe | Pháo Xa | 0.56 |
+| Pháo | Song Ngòi | 0.63 |
+| Pháo | Cận Chiến | 0.72 |
+| Pháo | Pháo Chéo | 0.60 |
+| Mã | Thiên Lý Mã | 0.76 |
+| Mã | Chiến Mã | 0.63 |
+| Mã | Ô Truy | 0.72 |
+| Tốt | Linh Hoạt | 0.68 |
+| Tốt | Xung Phong | 0.64 |
+| Tốt | Liên Hoàn | 0.55 |
+| Tốt | Thăng Cấp | 0.58 |
+
+Trong mỗi loại quân, chênh lệch giữa perk mạnh nhất và yếu nhất hiện vào khoảng 0.1–0.15, xấp xỉ mức nhiễu của phép đo.
+
+### Giới hạn
+
+- AI tự đấu ở độ sâu thấp (40 ms/nước) chơi kém hơn người, nên perk cần tính toán xa (Tử Sĩ, Liên Hoàn, Ngự Giá) có thể bị đo thấp hơn giá trị thật khi người chơi.
+- Nên thu thập số liệu từ ván người chơi thật sau khi ra mắt rồi chỉnh tiếp.

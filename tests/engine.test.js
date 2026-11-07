@@ -38,8 +38,9 @@ t('Pháo: Song Ngòi, Cận Chiến, Pháo Chéo', () => {
   assert.deepStrictEqual(tos(st, 9, 0).filter((x) => x.startsWith('3') || x.startsWith('8') || x.startsWith('6')), []);
   assert.ok(tos(raw({ C: 'c_songngoi' }, {}, b), 9, 0).includes('3,0'));
   assert.ok(tos(raw({ C: 'c_canchien' }, {}, b), 9, 0).includes('8,0'));
-  const b2 = kings(empty()); put(b2, 9, 0, 'C', 'r'); put(b2, 8, 1, 'P', 'r'); put(b2, 5, 4, 'H', 'b');
-  assert.ok(tos(raw({ C: 'c_phaocheo' }, {}, b2), 9, 0).includes('5,4'));
+  const b2 = kings(empty()); put(b2, 9, 0, 'C', 'r'); put(b2, 8, 1, 'P', 'r'); put(b2, 6, 3, 'H', 'b'); put(b2, 5, 4, 'H', 'b');
+  const pc = tos(raw({ C: 'c_phaocheo' }, {}, b2), 9, 0);
+  assert.ok(pc.includes('6,3') && !pc.includes('5,4')); // tầm chéo tối đa 3 ô
 });
 t('Thiết Giáp: Xe miễn nhiễm Pháo', () => {
   const b = kings(empty()); put(b, 9, 0, 'C', 'b'); put(b, 7, 0, 'P', 'r'); put(b, 5, 0, 'R', 'r');

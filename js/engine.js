@@ -231,7 +231,10 @@
           let screens = 0;
           const maxScreens = perk === 'c_songngoi' ? 2 : 1;
           let first = true;
+          let dist = 0;
+          const diag = dr !== 0 && dc !== 0;
           while (onBoard(tr, tc)) {
+            if (diag && ++dist > 3) break; // Pháo Chéo: đường chéo tối đa 3 ô
             const to = idx(tr, tc);
             const q = B[to];
             if (screens === 0) {

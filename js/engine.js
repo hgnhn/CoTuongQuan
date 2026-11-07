@@ -32,11 +32,6 @@
     if (s === 'r') return r >= (extended ? 6 : 7) && r <= 9;
     return r >= 0 && r <= (extended ? 3 : 2);
   }
-  // Cung mở rộng của perk Ngự Giá: thêm 1 hàng phía trước
-  function inGrandPalace(s, r, c) {
-    if (c < 3 || c > 5) return false;
-    return s === 'r' ? r >= 6 && r <= 9 : r >= 0 && r <= 3;
-  }
   // Các điểm nằm trên đường chéo của cung (4 góc + tâm)
   function isDiagPoint(s, r, c) {
     const top = s === 'r' ? 7 : 0;
@@ -125,10 +120,9 @@
 
     switch (p.t) {
       case 'K': {
-        const ext = perk === 'k_ngugia';
         for (const [dr, dc] of ORTH) {
           const tr = r + dr, tc = c + dc;
-          addIf(tr, tc, ext ? inGrandPalace(s, tr, tc) : inPalace(s, tr, tc, false));
+          addIf(tr, tc, inPalace(s, tr, tc, false));
           if (perk === 'k_khinhcong') {
             const r2 = r + 2 * dr, c2 = c + 2 * dc;
             if (inPalace(s, r2, c2, false) && onBoard(tr, tc) && !B[idx(tr, tc)]) add(r2, c2);
@@ -232,10 +226,10 @@
         break;
       }
       case 'C': {
-        for (const [dr, dc] of ORTH) {
+        for (const [dr, dc] of perk === 'c_phaocheo' ? ORTH.concat(DIAG) : ORTH) {
           let tr = r + dr, tc = c + dc;
           let screens = 0;
-          const maxScreens = perk === 'c_songngoi' || perk === 'c_phaobay' ? 2 : 1;
+          const maxScreens = perk === 'c_songngoi' ? 2 : 1;
           let first = true;
           while (onBoard(tr, tc)) {
             const to = idx(tr, tc);
@@ -247,9 +241,7 @@
                 screens = 1;
               }
             } else {
-              if (!q) {
-                if (screens <= 2 && perk === 'c_phaobay' && !capOnly) out.push({ from, to });
-              } else {
+              if (q) {
                 // Song Ngòi: không ăn (chiếu) Tướng qua 2 ngòi
                 if (screens === 1 || perk === 'c_songngoi') {
                   if (canCapture(state, p, q, to) && !(screens === 2 && q.t === 'K')) out.push({ from, to });

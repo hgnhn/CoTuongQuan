@@ -17,7 +17,7 @@
     a_canve: 25, a_tuantra: 20, a_kimcuong: 30, a_tusi: 30,
     e_vuotgiang: 10, e_voichien: 15, e_tieubo: 10,
     r_thietgiap: 50, r_chienxa: 40, r_phaoxa: 40,
-    c_songngoi: 70, c_canchien: 60, c_phaobay: 50,
+    c_songngoi: 70, c_canchien: 60, c_phaocheo: 60,
     h_thienly: 60, h_chienma: 70, h_otruy: 70,
     p_linhhoat: 20, p_xungphong: 15, p_lienhoan: 20, p_thangcap: 20,
   };
@@ -45,6 +45,10 @@
         break;
       case 'C':
         v += (c === 4 ? 20 : 0) + (adv >= 3 && adv <= 7 ? 10 : 0);
+        break;
+      case 'K':
+        // an toàn Tướng: rời hàng cuối hoặc ra cột biên cung đều bị trừ điểm
+        v -= adv * 25 + (c !== 4 ? 8 : 0);
         break;
       case 'R':
         v += (adv >= 4 ? 15 : 0) + (adv === 0 && (c === 0 || c === 8) ? -15 : 0);

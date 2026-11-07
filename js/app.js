@@ -127,21 +127,21 @@
   // Thế cờ minh hoạ cho từng loại quân / perk. Quân: [hàng, cột, loại, bên]
   const DEMOS = {
     K: { focus: [9, 4], pieces: [[9, 4, 'K', 'r'], [9, 3, 'A', 'r'], [9, 5, 'A', 'r'], [0, 3, 'K', 'b']] },
-    k_ngugia: { focus: [7, 3], pieces: [[7, 3, 'K', 'r'], [0, 4, 'K', 'b']],
-      note: 'Tướng Đỏ được đứng đối mặt Tướng Đen; khi đó chính Tướng Đen bị chiếu.' },
+    k_ngugia: { focus: [9, 4], pieces: [[9, 4, 'K', 'r'], [0, 3, 'K', 'b']],
+      note: 'Tướng Đỏ được sang cột 4 đối mặt Tướng Đen. Khi đó Tướng Đen bị chiếu và phải tránh.' },
     a_tuantra: { focus: [7, 5], pieces: [[7, 5, 'A', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
-    e_vuotgiang: { focus: [3, 2], pieces: [[3, 2, 'E', 'r'], [2, 3, 'P', 'b'], [9, 4, 'K', 'r'], [0, 4, 'K', 'b']] },
+    e_vuotgiang: { focus: [3, 2], pieces: [[3, 2, 'E', 'r'], [2, 3, 'P', 'b'], [9, 4, 'K', 'r'], [0, 5, 'K', 'b']] },
     A: { focus: [9, 3], pieces: [[9, 3, 'A', 'r'], [9, 5, 'K', 'r'], [0, 4, 'K', 'b']] },
     a_kimcuong: { focus: [4, 4], pieces: [[8, 4, 'A', 'r'], [9, 5, 'K', 'r'], [6, 4, 'P', 'r'], [4, 4, 'C', 'b'], [0, 3, 'K', 'b']],
       note: 'Pháo Đen không còn ăn được Sĩ Đỏ qua ngòi. Mã và Tốt cũng vậy.' },
     a_tusi: { focus: [3, 4], pieces: [[8, 4, 'A', 'r'], [9, 5, 'K', 'r'], [3, 4, 'R', 'b'], [0, 3, 'K', 'b']],
       note: 'Xe Đen ăn Sĩ thì Xe Đen cũng mất theo. Perk bị động, không đổi cách đi.' },
     E: { focus: [5, 2], pieces: [[5, 2, 'E', 'r'], [6, 3, 'P', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
-    R: { focus: [6, 4], pieces: [[6, 4, 'R', 'r'], [4, 4, 'P', 'r'], [2, 4, 'H', 'b'], [9, 3, 'K', 'r'], [0, 3, 'K', 'b']] },
+    R: { focus: [6, 4], pieces: [[6, 4, 'R', 'r'], [4, 4, 'P', 'r'], [2, 4, 'H', 'b'], [9, 3, 'K', 'r'], [0, 5, 'K', 'b']] },
     r_thietgiap: { focus: [2, 0], pieces: [[6, 0, 'R', 'r'], [4, 0, 'P', 'r'], [2, 0, 'C', 'b'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']],
       note: 'Pháo Đen không còn ăn được Xe Đỏ.' },
-    C: { focus: [7, 4], pieces: [[7, 4, 'C', 'r'], [7, 5, 'P', 'b'], [5, 4, 'P', 'r'], [3, 4, 'P', 'r'], [1, 4, 'R', 'b'], [9, 3, 'K', 'r'], [0, 3, 'K', 'b']] },
-    H: { focus: [7, 4], pieces: [[7, 4, 'H', 'r'], [6, 4, 'P', 'r'], [9, 3, 'K', 'r'], [0, 3, 'K', 'b']] },
+    C: { focus: [7, 4], pieces: [[7, 4, 'C', 'r'], [7, 5, 'P', 'b'], [5, 4, 'P', 'r'], [3, 4, 'P', 'r'], [1, 4, 'R', 'b'], [9, 3, 'K', 'r'], [0, 5, 'K', 'b']] },
+    H: { focus: [7, 4], pieces: [[7, 4, 'H', 'r'], [6, 4, 'P', 'r'], [9, 3, 'K', 'r'], [0, 5, 'K', 'b']] },
     P: { focus: [6, 2], pieces: [[6, 2, 'P', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
     p_lienhoan: { focus: [1, 3], pieces: [[4, 3, 'P', 'r'], [4, 4, 'P', 'r'], [1, 3, 'R', 'b'], [9, 4, 'K', 'r'], [0, 4, 'K', 'b']],
       note: 'Hai Tốt Đỏ đứng sát ngang nhau nên Xe Đen không ăn được.' },
@@ -158,7 +158,7 @@
     const without = { board, turn: 'r', perks: { r: { ...NONE }, b: { ...NONE } }, swapUsed: { r: false, b: false } };
     const fsq = E.idx(demo.focus[0], demo.focus[1]);
     const key = (m) => m.to + (m.swap ? 's' : '');
-    const a = E.genPieceMoves(without, fsq), b = E.genPieceMoves(withP, fsq);
+    const a = E.legalMovesFrom(without, fsq), b = E.legalMovesFrom(withP, fsq);
     const ak = new Set(a.map(key)), bk = new Set(b.map(key));
     const moves = [];
     for (const m of b) moves.push({ to: m.to, kind: ak.has(key(m)) ? 'base' : 'perk' });

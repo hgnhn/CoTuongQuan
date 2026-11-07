@@ -32,13 +32,14 @@ t('Mã bị cản chân / Thiên Lý Mã', () => {
   assert.strictEqual(tos(raw({}, {}, b), 5, 4).length, 6);
   assert.strictEqual(tos(raw({ H: 'h_thienly' }, {}, b), 5, 4).length, 8);
 });
-t('Pháo: Song Ngòi, Cận Chiến, Pháo Bay', () => {
+t('Pháo: Song Ngòi, Cận Chiến, Pháo Chéo', () => {
   const b = kings(empty()); put(b, 9, 0, 'C', 'r'); put(b, 8, 0, 'P', 'b'); put(b, 6, 0, 'P', 'r'); put(b, 3, 0, 'R', 'b');
   const st = raw({}, {}, b);
   assert.deepStrictEqual(tos(st, 9, 0).filter((x) => x.startsWith('3') || x.startsWith('8') || x.startsWith('6')), []);
   assert.ok(tos(raw({ C: 'c_songngoi' }, {}, b), 9, 0).includes('3,0'));
   assert.ok(tos(raw({ C: 'c_canchien' }, {}, b), 9, 0).includes('8,0'));
-  assert.ok(tos(raw({ C: 'c_phaobay' }, {}, b), 9, 0).includes('7,0'));
+  const b2 = kings(empty()); put(b2, 9, 0, 'C', 'r'); put(b2, 8, 1, 'P', 'r'); put(b2, 5, 4, 'H', 'b');
+  assert.ok(tos(raw({ C: 'c_phaocheo' }, {}, b2), 9, 0).includes('5,4'));
 });
 t('Thiết Giáp: Xe miễn nhiễm Pháo', () => {
   const b = kings(empty()); put(b, 9, 0, 'C', 'b'); put(b, 7, 0, 'P', 'r'); put(b, 5, 0, 'R', 'r');

@@ -74,17 +74,32 @@ t('Thăng Cấp: Tốt phong Xe', () => {
   const u = E.makeMove(st, { from: E.idx(2, 0), to: E.idx(1, 0) });
   assert.ok(u.promoted && st.board[E.idx(1, 0)].t === 'R');
 });
-t('Kim Thiền Thoát Xác: đổi chỗ một lần', () => {
+t('Kim Thiền Thoát Xác: đổi chỗ hai lần', () => {
   const st = E.createState({ K: 'k_hoanvi' }, {});
   const sw = E.legalMovesFrom(st, E.idx(9, 4)).filter((m) => m.swap);
   assert.strictEqual(sw.length, 2); // 2 Sĩ
   E.makeMove(st, sw[0]); st.turn = 'r';
+  const sw2 = E.legalMovesFrom(st, E.idx(9, 3)).filter((m) => m.swap);
+  assert.ok(sw2.length > 0);
+  E.makeMove(st, sw2[0]); st.turn = 'r';
   assert.strictEqual(E.legalMovesFrom(st, E.idx(9, 3)).filter((m) => m.swap).length, 0);
 });
 t('Lộ mặt tướng là không hợp lệ', () => {
   const b = empty(); put(b, 9, 4, 'K', 'r'); put(b, 0, 3, 'K', 'b');
   const st = raw({}, {}, b);
   assert.ok(!E.legalMovesFrom(st, E.idx(9, 4)).some((m) => m.to === E.idx(9, 3)));
+});
+t('Ngự Giá: Tướng mình được đối mặt, Tướng địch bị chiếu', () => {
+  const b = empty(); put(b, 9, 4, 'K', 'r'); put(b, 0, 3, 'K', 'b');
+  const st = raw({ K: 'k_ngugia' }, {}, b);
+  assert.ok(E.legalMovesFrom(st, E.idx(9, 4)).some((m) => m.to === E.idx(9, 3)));
+  E.makeMove(st, { from: E.idx(9, 4), to: E.idx(9, 3) });
+  assert.ok(E.inCheck(st, 'b') && !E.inCheck(st, 'r'));
+});
+t('Song Ngòi không chiếu qua 2 ngòi', () => {
+  const b = empty(); put(b, 9, 4, 'C', 'r'); put(b, 7, 4, 'P', 'r'); put(b, 5, 4, 'P', 'b'); put(b, 0, 4, 'K', 'b'); put(b, 9, 3, 'K', 'r');
+  const st = raw({ C: 'c_songngoi' }, {}, b); st.turn = 'b';
+  assert.ok(!E.inCheck(st, 'b'));
 });
 t('Chiếu bí bằng Xe đôi', () => {
   const b = empty(); put(b, 0, 4, 'K', 'b'); put(b, 9, 3, 'K', 'r'); put(b, 1, 0, 'R', 'r'); put(b, 0, 8, 'R', 'r');

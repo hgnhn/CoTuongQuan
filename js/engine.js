@@ -66,7 +66,7 @@
       board: board || E.initialBoard(),
       turn: 'r',
       perks: { r: CTQ.sanitizeLoadout(perksRed), b: CTQ.sanitizeLoadout(perksBlack) },
-      swapUsed: { r: false, b: false },
+      swapUsed: { r: 0, b: 0 },
     };
   };
 
@@ -95,7 +95,7 @@
   function canCapture(state, att, tgt, tsq) {
     if (!tgt || tgt.s === att.s) return false;
     if (tgt.t === 'R' && att.t === 'C' && has(state, tgt.s, 'R', 'r_thietgiap')) return false;
-    if (tgt.t === 'A' && (att.t === 'C' || att.t === 'P') && has(state, tgt.s, 'A', 'a_kimcuong')) return false;
+    if (tgt.t === 'A' && (att.t === 'C' || att.t === 'H' || att.t === 'P') && has(state, tgt.s, 'A', 'a_kimcuong')) return false;
     if (tgt.t === 'P' && (att.t === 'R' || att.t === 'H' || att.t === 'C') && has(state, tgt.s, 'P', 'p_lienhoan') && pawnLinked(state, tsq, tgt.s)) return false;
     return true;
   }
@@ -140,7 +140,7 @@
             addIf(tr, tc, inPalace(s, tr, tc, false));
           }
         }
-        if (perk === 'k_hoanvi' && !state.swapUsed[s] && !capOnly) {
+        if (perk === 'k_hoanvi' && (state.swapUsed[s] || 0) < 2 && !capOnly) {
           for (const [dr, dc] of ORTH.concat(DIAG)) {
             const tr = r + dr, tc = c + dc;
             if (!inPalace(s, tr, tc, false)) continue;
@@ -153,7 +153,7 @@
       case 'A': {
         for (const [dr, dc] of DIAG) {
           const tr = r + dr, tc = c + dc;
-          if (perk === 'a_tuantra') addIf(tr, tc, onBoard(tr, tc) && (ownHalf(s, tr) || isDiagPoint(s, tr, tc)));
+          if (perk === 'a_tuantra') add(tr, tc);
           else addIf(tr, tc, isDiagPoint(s, r, c) && isDiagPoint(s, tr, tc));
         }
         if (perk === 'a_canve') {
@@ -170,13 +170,14 @@
           const tr = r + 2 * dr, tc = c + 2 * dc;
           if (!onBoard(tr, tc)) continue;
           if (!crossOk && !ownHalf(s, tr)) continue;
-          if (perk !== 'e_voichien' && B[idx(r + dr, c + dc)]) continue;
+          const freeEye = perk === 'e_voichien' || (crossOk && !ownHalf(s, r));
+          if (!freeEye && B[idx(r + dr, c + dc)]) continue;
           add(tr, tc);
         }
         if (perk === 'e_tieubo') {
           for (const [dr, dc] of DIAG) {
             const tr = r + dr, tc = c + dc;
-            addIf(tr, tc, onBoard(tr, tc) && ownHalf(s, tr));
+            if (onBoard(tr, tc) && ownHalf(s, tr)) step(tr, tc);
           }
         }
         break;
@@ -192,10 +193,14 @@
           }
           add(tr, tc);
         }
-        if (perk === 'h_chienma') for (const [dr, dc] of ORTH) step(r + dr, c + dc);
+        if (perk === 'h_chienma') {
+          // tiến thẳng được ăn quân, các hướng khác chỉ đi tới ô trống
+          for (const [dr, dc] of ORTH) (dr === fwd(s) ? add : step)(r + dr, c + dc);
+        }
         if (perk === 'h_otruy') {
           // nhảy dài: 2 ô thẳng đầu tiên phải trống
           for (const [dr, dc] of CAMEL) {
+            if (Math.abs(dr) !== 3) continue; // chỉ nhảy dài theo chiều dọc
             const ur = Math.abs(dr) === 3 ? Math.sign(dr) : 0, uc = Math.abs(dc) === 3 ? Math.sign(dc) : 0;
             if (!onBoard(r + dr, c + dc)) continue;
             if (B[idx(r + ur, c + uc)] || B[idx(r + 2 * ur, c + 2 * uc)]) continue;
@@ -213,7 +218,7 @@
             else { if (canCapture(state, p, q, idx(tr, tc))) out.push({ from, to: idx(tr, tc) }); break; }
             tr += dr; tc += dc;
           }
-          if (perk === 'r_phaoxa' && onBoard(tr, tc) && B[idx(tr, tc)].s === s) {
+          if (perk === 'r_phaoxa' && dc === 0 && onBoard(tr, tc) && B[idx(tr, tc)].s === s) {
             // ngòi là quân mình: quân đầu tiên phía sau là mục tiêu
             tr += dr; tc += dc;
             while (onBoard(tr, tc)) {
@@ -223,7 +228,7 @@
             }
           }
         }
-        if (perk === 'r_chienxa') for (const [dr, dc] of DIAG) step(r + dr, c + dc);
+        if (perk === 'r_chienxa') for (const [dr, dc] of DIAG) (dr === fwd(s) ? add : step)(r + dr, c + dc);
         break;
       }
       case 'C': {
@@ -245,7 +250,8 @@
               if (!q) {
                 if (screens === 1 && perk === 'c_phaobay' && !capOnly) out.push({ from, to });
               } else {
-                if (canCapture(state, p, q, to)) out.push({ from, to });
+                // Song Ngòi: không ăn (chiếu) Tướng qua 2 ngòi
+                if (canCapture(state, p, q, to) && !(screens === 2 && q.t === 'K')) out.push({ from, to });
                 screens++;
                 if (screens > maxScreens) break;
               }
@@ -260,7 +266,8 @@
         const f = fwd(s);
         const crossed = !ownHalf(s, r);
         add(r + f, c);
-        if (crossed || perk === 'p_linhhoat') { add(r, c - 1); add(r, c + 1); }
+        if (crossed) { add(r, c - 1); add(r, c + 1); }
+        else if (perk === 'p_linhhoat') { step(r, c - 1); step(r, c + 1); }
         if (perk === 'p_xungphong' && !crossed && onBoard(r + f, c) && !B[idx(r + f, c)]) add(r + 2 * f, c);
         break;
       }
@@ -297,7 +304,7 @@
     if (m.swap) {
       B[m.to] = mover;
       B[m.from] = target;
-      state.swapUsed[s] = true;
+      state.swapUsed[s] = (state.swapUsed[s] || 0) + 1;
     } else {
       B[m.from] = null;
       let placed = mover;
@@ -342,7 +349,8 @@
       const r1 = Math.min(rowOf(k), rowOf(ok)), r2 = Math.max(rowOf(k), rowOf(ok));
       let blocked = false;
       for (let r = r1 + 1; r < r2; r++) if (state.board[idx(r, c)]) { blocked = true; break; }
-      if (!blocked) return true;
+      // Ngự Giá: luật lộ mặt tướng chỉ ràng buộc Tướng địch
+      if (!blocked && !(has(state, side, 'K', 'k_ngugia') && !has(state, other(side), 'K', 'k_ngugia'))) return true;
     }
     const B = state.board;
     const opp = other(side);
@@ -387,7 +395,7 @@
   };
 
   E.positionKey = function (state) {
-    let k = state.turn + (state.swapUsed.r ? '1' : '0') + (state.swapUsed.b ? '1' : '0');
+    let k = state.turn + (state.swapUsed.r || 0) + (state.swapUsed.b || 0);
     for (const p of state.board) k += p ? (p.s === 'r' ? p.t : p.t.toLowerCase()) : '.';
     return k;
   };

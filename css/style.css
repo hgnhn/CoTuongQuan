@@ -276,13 +276,14 @@ p { margin: 0; }
 }
 .mark-sq.last-from::after { content: ''; width: 34%; height: 34%; border-radius: 50%; background: rgba(90, 58, 32, 0.28); }
 .mark-sq.last-to { z-index: 3; pointer-events: none; box-shadow: 0 0 0 0.45cqw rgba(201, 162, 74, 0.85); }
-button.mark-sq.target { z-index: 4; }
+button.mark-sq.target, span.mark-sq.target { z-index: 4; }
+span.mark-sq { pointer-events: none; }
 .mark-sq.target::after { content: ''; width: 32%; height: 32%; border-radius: 50%; background: rgba(62, 122, 94, 0.9); box-shadow: 0 0 0 0.35cqw rgba(237, 227, 204, 0.7); }
 .mark-sq.target.kind-perk::after { background: var(--gold); box-shadow: 0 0 0 0.35cqw var(--ink), 0 0 1.4cqw var(--gold-soft); }
 .mark-sq.target.kind-lost::after { background: none; width: 46%; height: 46%; box-shadow: none; border-radius: 0;
   background: linear-gradient(45deg, transparent 42%, var(--cinnabar) 42% 58%, transparent 58%), linear-gradient(-45deg, transparent 42%, var(--cinnabar) 42% 58%, transparent 58%); }
-.mark-sq.target.is-capture::after { width: 112%; height: 112%; background: none; box-shadow: 0 0 0 0.6cqw rgba(62, 122, 94, 0.95); }
-.mark-sq.target.is-capture.kind-perk::after { box-shadow: 0 0 0 0.6cqw var(--gold), 0 0 1.6cqw var(--gold-soft); background: none; }
+.mark-sq.target.is-capture::after { width: 112%; height: 112%; background: none; box-shadow: 0 0 0 1cqw rgba(62, 122, 94, 0.95); }
+.mark-sq.target.is-capture.kind-perk::after { box-shadow: 0 0 0 1.1cqw var(--gold), 0 0 2.4cqw var(--gold-soft); background: none; }
 .mark-sq.target.is-capture.kind-lost::after { width: 60%; height: 60%; }
 button.mark-sq.target:hover::after { transform: scale(1.2); }
 

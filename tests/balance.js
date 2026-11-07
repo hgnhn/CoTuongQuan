@@ -36,8 +36,12 @@ function playGame(pr, pb, maxPly, collect) {
   return ev > 150 ? 1 : ev < -150 ? 0 : 0.5;
 }
 
+// Đối số thứ 4: danh sách loại quân (vd "K,A") hoặc id perk (vd "h_otruy,c_songngoi")
+const PERK_FILTER = ONLY.includes('_') ? new Set(ONLY.split(',')) : null;
+
 // ---- 1) Độ cơ động ----
 const samples = [];
+if (!PERK_FILTER) {
 for (let g = 0; g < 6; g++) playGame({}, {}, 90, samples);
 console.log(`Độ cơ động (trên ${samples.length} thế cờ trung cuộc): số nước tăng thêm / mỗi quân`);
 for (const t of CTQ.PIECE_ORDER) {
@@ -61,14 +65,16 @@ for (const t of CTQ.PIECE_ORDER) {
   }
   console.log(`  ${CTQ.PIECES[t].name.padEnd(6)} ${rows.join(' | ')}`);
 }
+}
 
 // ---- 2) Tự đấu ----
 if (GAMES > 0) {
   console.log(`\nTự đấu: ${GAMES} ván / perk, ${MS}ms mỗi nước. Điểm của bên có perk (0.5 = cân bằng)`);
   // Mốc chuẩn: không perk vs không perk
-  const types = ONLY ? ONLY.split(',') : CTQ.PIECE_ORDER;
+  const types = ONLY && !PERK_FILTER ? ONLY.split(',') : CTQ.PIECE_ORDER;
   for (const t of types) {
     for (const perk of CTQ.PERKS[t]) {
+      if (PERK_FILTER && !PERK_FILTER.has(perk.id)) continue;
       let score = 0;
       const t0 = Date.now();
       for (let g = 0; g < GAMES; g++) {

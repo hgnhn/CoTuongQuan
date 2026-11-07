@@ -127,10 +127,13 @@
   // Thế cờ minh hoạ cho từng loại quân / perk. Quân: [hàng, cột, loại, bên]
   const DEMOS = {
     K: { focus: [9, 4], pieces: [[9, 4, 'K', 'r'], [9, 3, 'A', 'r'], [9, 5, 'A', 'r'], [0, 3, 'K', 'b']] },
-    k_ngugia: { focus: [7, 3], pieces: [[7, 3, 'K', 'r'], [0, 4, 'K', 'b']] },
+    k_ngugia: { focus: [7, 3], pieces: [[7, 3, 'K', 'r'], [0, 4, 'K', 'b']],
+      note: 'Tướng Đỏ được đứng đối mặt Tướng Đen; khi đó chính Tướng Đen bị chiếu.' },
+    a_tuantra: { focus: [7, 5], pieces: [[7, 5, 'A', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
+    e_vuotgiang: { focus: [3, 2], pieces: [[3, 2, 'E', 'r'], [2, 3, 'P', 'b'], [9, 4, 'K', 'r'], [0, 4, 'K', 'b']] },
     A: { focus: [9, 3], pieces: [[9, 3, 'A', 'r'], [9, 5, 'K', 'r'], [0, 4, 'K', 'b']] },
     a_kimcuong: { focus: [4, 4], pieces: [[8, 4, 'A', 'r'], [9, 5, 'K', 'r'], [6, 4, 'P', 'r'], [4, 4, 'C', 'b'], [0, 3, 'K', 'b']],
-      note: 'Pháo Đen không còn ăn được Sĩ Đỏ qua ngòi.' },
+      note: 'Pháo Đen không còn ăn được Sĩ Đỏ qua ngòi. Mã và Tốt cũng vậy.' },
     a_tusi: { focus: [3, 4], pieces: [[8, 4, 'A', 'r'], [9, 5, 'K', 'r'], [3, 4, 'R', 'b'], [0, 3, 'K', 'b']],
       note: 'Xe Đen ăn Sĩ thì Xe Đen cũng mất theo. Perk bị động, không đổi cách đi.' },
     E: { focus: [5, 2], pieces: [[5, 2, 'E', 'r'], [6, 3, 'P', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
@@ -162,7 +165,7 @@
     for (const m of a) if (!bk.has(key(m))) moves.push({ to: m.to, kind: 'lost' });
     demoBoard.render(withP, { moves, focus: fsq, showPerk: false });
     let note = demo.note || '';
-    if (perkId === 'k_hoanvi') note = 'Vòng vàng trên quân mình là ô Tướng có thể đổi chỗ (chỉ một lần mỗi trận).';
+    if (perkId === 'k_hoanvi') note = 'Vòng vàng trên quân mình là ô Tướng có thể đổi chỗ (hai lần mỗi trận).';
     $('#demo-note').textContent = note;
   }
 
@@ -676,7 +679,7 @@
     for (const h of game.history) if (h.u.captured && h.u.captured.s !== side) captured.push(h.u.captured);
     const chips = CTQ.PIECE_ORDER.map((t) => {
       const perk = CTQ.perkById(st.perks[side][t]);
-      const used = t === 'K' && perk.id === 'k_hoanvi' && st.swapUsed[side];
+      const used = t === 'K' && perk.id === 'k_hoanvi' && st.swapUsed[side] >= 2;
       return `<button type="button" class="chip ${used ? 'is-used' : ''}" data-chip="${side}${t}" title="${esc(perk.name + ': ' + perk.desc)}">
         <span class="mini-glyph side-${side}">${CTQ.PIECES[t].glyph[side]}</span>${esc(perk.name)}</button>`;
     }).join('');

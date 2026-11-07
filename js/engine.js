@@ -32,9 +32,9 @@
     if (s === 'r') return r >= (extended ? 6 : 7) && r <= 9;
     return r >= 0 && r <= (extended ? 3 : 2);
   }
-  // Cung mở rộng của perk Ngự Giá: thêm 1 hàng phía trước và 1 cột mỗi bên
+  // Cung mở rộng của perk Ngự Giá: thêm 1 hàng phía trước
   function inGrandPalace(s, r, c) {
-    if (c < 2 || c > 6) return false;
+    if (c < 3 || c > 5) return false;
     return s === 'r' ? r >= 6 && r <= 9 : r >= 0 && r <= 3;
   }
   // Các điểm nằm trên đường chéo của cung (4 góc + tâm)
@@ -140,7 +140,7 @@
             addIf(tr, tc, inPalace(s, tr, tc, false));
           }
         }
-        if (perk === 'k_hoanvi' && (state.swapUsed[s] || 0) < 2 && !capOnly) {
+        if (perk === 'k_hoanvi' && (state.swapUsed[s] || 0) < 3 && !capOnly) {
           for (const [dr, dc] of ORTH.concat(DIAG)) {
             const tr = r + dr, tc = c + dc;
             if (!inPalace(s, tr, tc, false)) continue;
@@ -228,14 +228,14 @@
             }
           }
         }
-        if (perk === 'r_chienxa') for (const [dr, dc] of DIAG) (dr === fwd(s) ? add : step)(r + dr, c + dc);
+        if (perk === 'r_chienxa') for (const [dr, dc] of DIAG) step(r + dr, c + dc);
         break;
       }
       case 'C': {
         for (const [dr, dc] of ORTH) {
           let tr = r + dr, tc = c + dc;
           let screens = 0;
-          const maxScreens = perk === 'c_songngoi' ? 2 : 1;
+          const maxScreens = perk === 'c_songngoi' || perk === 'c_phaobay' ? 2 : 1;
           let first = true;
           while (onBoard(tr, tc)) {
             const to = idx(tr, tc);
@@ -243,15 +243,17 @@
             if (screens === 0) {
               if (!q) { if (!capOnly) out.push({ from, to }); }
               else {
-                if (first && perk === 'c_canchien' && canCapture(state, p, q, to)) out.push({ from, to });
+                if (first && perk === 'c_canchien' && q.t !== 'K' && canCapture(state, p, q, to)) out.push({ from, to });
                 screens = 1;
               }
             } else {
               if (!q) {
-                if (screens === 1 && perk === 'c_phaobay' && !capOnly) out.push({ from, to });
+                if (screens <= 2 && perk === 'c_phaobay' && !capOnly) out.push({ from, to });
               } else {
                 // Song Ngòi: không ăn (chiếu) Tướng qua 2 ngòi
-                if (canCapture(state, p, q, to) && !(screens === 2 && q.t === 'K')) out.push({ from, to });
+                if (screens === 1 || perk === 'c_songngoi') {
+                  if (canCapture(state, p, q, to) && !(screens === 2 && q.t === 'K')) out.push({ from, to });
+                }
                 screens++;
                 if (screens > maxScreens) break;
               }
@@ -266,8 +268,7 @@
         const f = fwd(s);
         const crossed = !ownHalf(s, r);
         add(r + f, c);
-        if (crossed) { add(r, c - 1); add(r, c + 1); }
-        else if (perk === 'p_linhhoat') { step(r, c - 1); step(r, c + 1); }
+        if (crossed || perk === 'p_linhhoat') { add(r, c - 1); add(r, c + 1); }
         if (perk === 'p_xungphong' && !crossed && onBoard(r + f, c) && !B[idx(r + f, c)]) add(r + 2 * f, c);
         break;
       }

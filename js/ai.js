@@ -14,12 +14,12 @@
   // xem tests/balance.js). Giúp AI biết đổi quân hợp lý.
   AI.PERK_BONUS = {
     k_batquai: 0, k_khinhcong: 0, k_ngugia: 0, k_hoanvi: 0,
-    a_canve: 20, a_tuantra: 40, a_kimcuong: 40, a_tusi: 60,
-    e_vuotgiang: 80, e_voichien: 40, e_tieubo: 30,
-    r_thietgiap: 60, r_chienxa: 60, r_phaoxa: 80,
-    c_songngoi: 60, c_canchien: 50, c_phaobay: 60,
-    h_thienly: 70, h_chienma: 50, h_otruy: 90,
-    p_linhhoat: 20, p_xungphong: 15, p_lienhoan: 30, p_thangcap: 20,
+    a_canve: 25, a_tuantra: 20, a_kimcuong: 30, a_tusi: 30,
+    e_vuotgiang: 10, e_voichien: 15, e_tieubo: 10,
+    r_thietgiap: 50, r_chienxa: 40, r_phaoxa: 40,
+    c_songngoi: 70, c_canchien: 60, c_phaobay: 50,
+    h_thienly: 60, h_chienma: 70, h_otruy: 70,
+    p_linhhoat: 20, p_xungphong: 15, p_lienhoan: 20, p_thangcap: 20,
   };
 
   const MATE = 100000;

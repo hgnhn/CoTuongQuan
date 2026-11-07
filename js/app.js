@@ -165,7 +165,7 @@
     for (const m of a) if (!bk.has(key(m))) moves.push({ to: m.to, kind: 'lost' });
     demoBoard.render(withP, { moves, focus: fsq, showPerk: false });
     let note = demo.note || '';
-    if (perkId === 'k_hoanvi') note = 'Vòng vàng trên quân mình là ô Tướng có thể đổi chỗ (hai lần mỗi trận).';
+    if (perkId === 'k_hoanvi') note = 'Vòng vàng trên quân mình là ô Tướng có thể đổi chỗ (ba lần mỗi trận).';
     $('#demo-note').textContent = note;
   }
 
@@ -679,7 +679,7 @@
     for (const h of game.history) if (h.u.captured && h.u.captured.s !== side) captured.push(h.u.captured);
     const chips = CTQ.PIECE_ORDER.map((t) => {
       const perk = CTQ.perkById(st.perks[side][t]);
-      const used = t === 'K' && perk.id === 'k_hoanvi' && st.swapUsed[side] >= 2;
+      const used = t === 'K' && perk.id === 'k_hoanvi' && st.swapUsed[side] >= 3;
       return `<button type="button" class="chip ${used ? 'is-used' : ''}" data-chip="${side}${t}" title="${esc(perk.name + ': ' + perk.desc)}">
         <span class="mini-glyph side-${side}">${CTQ.PIECES[t].glyph[side]}</span>${esc(perk.name)}</button>`;
     }).join('');

@@ -229,11 +229,14 @@
     return `${base}?phong=${code}`;
   }
 
+  // Đọc mã phòng từ link mời: ?phong=MÃ hoặc #phong=MÃ (một số app làm rơi phần ?…)
   function readInviteFromURL() {
     const q = new URLSearchParams(location.search);
-    const code = (q.get('phong') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+    const raw = q.get('phong') || h.get('phong') || '';
+    const code = raw.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (code.length === 5) pendingInvite = code;
-    if (q.has('phong')) history.replaceState(null, '', location.pathname);
+    if (raw) history.replaceState(null, '', location.pathname);
   }
 
   function renderAccount() {
@@ -251,7 +254,11 @@
     const el = $('#invite-banner');
     if (!pendingInvite) { el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = `<p><strong>Bạn được mời vào phòng ${esc(pendingInvite)}.</strong> Chỉnh đội hình xong rồi vào trận, vì sau khi vào trận sẽ không đổi perk được nữa.</p>
+    const app = CTQ.inAppBrowser();
+    const warn = app || !CTQ.hasWebRTC()
+      ? `<p class="ib-warn">Bạn đang mở link trong trình duyệt của ${esc(app || 'ứng dụng')}, có thể không vào được phòng. Bấm nút ⋯ hoặc ⋮ ở góc màn hình, chọn <strong>Mở bằng trình duyệt</strong> (Chrome/Safari). Hoặc tự mở <strong>${esc(location.host)}</strong> rồi nhập mã <strong>${esc(pendingInvite)}</strong>.</p>`
+      : '';
+    el.innerHTML = `<p><strong>Bạn được mời vào phòng ${esc(pendingInvite)}.</strong> Chỉnh đội hình xong rồi vào trận, vì sau khi vào trận sẽ không đổi perk được nữa.</p>${warn}
       <div class="ib-actions">
         <button class="primary-btn" id="ib-join">Vào phòng</button>
         <button class="ghost-btn" data-action="army">Chỉnh đội hình</button>
@@ -347,16 +354,17 @@
         <div class="dlg-content"><p>Gửi link mời cho đối thủ. Họ cần đăng nhập rồi mới vào được trận.</p>
         <p class="invite-link"><input id="invite-link" readonly value="${esc(link)}" aria-label="Link mời"></p>
         <p class="muted">Hoặc đọc mã phòng: <span class="room-code-inline">${code}</span></p>
-        <p class="muted" id="room-wait">Đang chờ đối thủ vào phòng…</p></div>
+        <p class="muted" id="room-wait">Đang chờ đối thủ vào phòng… Giữ màn hình này mở: trên điện thoại, chuyển sang app khác quá lâu có thể làm mất phòng.</p></div>
         <div class="dlg-actions"><button value="cancel" class="ghost-btn">Huỷ phòng</button>${navigator.share ? '<button type="button" class="ghost-btn" id="share-link">Chia sẻ</button>' : ''}<button type="button" class="primary-btn" id="copy-link">Sao chép link</button></div>`;
       $('#invite-link').addEventListener('focus', (e) => e.target.select());
+      const inviteText = `${myName()} mời bạn đấu Cờ Tướng Quân: ${link}\nNếu link không vào được, mở ${new URL(link).host} bằng Chrome/Safari rồi nhập mã phòng ${code}.`;
       $('#copy-link').addEventListener('click', () => {
         const done = () => { $('#copy-link').textContent = 'Đã sao chép'; };
-        if (navigator.clipboard) navigator.clipboard.writeText(link).then(done, () => { $('#invite-link').select(); });
+        if (navigator.clipboard) navigator.clipboard.writeText(inviteText).then(done, () => { $('#invite-link').select(); });
         else { $('#invite-link').select(); document.execCommand('copy'); done(); }
       });
       const sh = $('#share-link');
-      if (sh) sh.addEventListener('click', () => navigator.share({ title: 'Cờ Tướng Quân', text: `${myName()} mời bạn đấu Cờ Tướng Quân`, url: link }).catch(() => {}));
+      if (sh) sh.addEventListener('click', () => navigator.share({ title: 'Cờ Tướng Quân', text: inviteText }).catch(() => {}));
     } catch (e) {
       closeDialog();
       leaveRoom();
@@ -414,7 +422,9 @@
       if (room !== myRoom) return;
       closeDialog();
       leaveRoom();
-      dialog({ title: 'Không vào được phòng', body: `<p>${esc(e.message)}</p>`, buttons: [{ label: 'Đóng', value: 'ok', primary: true }] });
+      const v = await dialog({ title: 'Không vào được phòng ' + code, body: `<p>${esc(e.message)}</p>`,
+        buttons: [{ label: 'Đóng', value: 'ok' }, { label: 'Thử lại', value: 'retry', primary: true }] });
+      if (v === 'retry') joinRoom(code);
     }
   }
 

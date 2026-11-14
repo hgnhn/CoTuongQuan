@@ -72,7 +72,7 @@
       { id: 'c_canchien', name: 'Cận Chiến',
         desc: 'Pháo được ăn thẳng quân địch đứng sát bên (ngang/dọc), không cần ngòi. Không áp dụng với Tướng.' },
       { id: 'c_hoacong', name: 'Hoả Công',
-        desc: 'Khi Pháo ăn quân, lửa lan ra ô ngay sau mục tiêu theo hướng bắn và 2 ô hai bên ô đó: quân địch ở đó bị thiêu (trừ Tướng).' },
+        desc: 'Khi Pháo ăn quân và còn sống, thiêu quân địch ở ô ngay sau mục tiêu theo hướng bắn (trừ Tướng); 2 ô hai bên ô đó chỉ thiêu Tốt, Sĩ, Tượng. Miễn nhiễm Pháo vẫn chặn lửa.' },
       { id: 'c_phaocheo', name: 'Pháo Chéo',
         desc: 'Pháo được đi và ăn theo đường chéo (tầm tối đa 3 ô), theo đúng cách của Pháo. Đường chéo không dùng để chiếu Tướng.' },
     ],

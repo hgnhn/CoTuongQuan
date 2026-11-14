@@ -5,6 +5,15 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.4.1', date: '14/11/2026', title: 'Cân bằng Hoả Công và Archimedes',
+      items: [
+        'Hoả Công: ô ngay sau mục tiêu vẫn thiêu mọi quân địch trừ Tướng; 2 ô bên chỉ thiêu Tốt, Sĩ, Tượng.',
+        'Pháo chết khi ăn Tử Sĩ không còn kích hoạt Hoả Công. Miễn nhiễm Pháo vẫn chặn lửa.',
+        'Archimedes đổi Hoả Công thành Song Ngòi, kết hợp với Pháo Chéo: ăn qua 1 hoặc 2 ngòi, giữ giới hạn chiếu Tướng.',
+        'Cập nhật bàn minh hoạ. Trận trực tuyến yêu cầu cả hai bên dùng cùng phiên bản luật mới.',
+      ],
+    },
+    {
       v: '0.4.0', date: '14/11/2026', title: 'Bản mở rộng: Danh Tướng & Quân Sư',
       items: [
         'Thêm sảnh Bản mở rộng: mỗi đội hình có 1 Danh Tướng và 1 Quân Sư.',

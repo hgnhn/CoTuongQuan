@@ -30,12 +30,12 @@ test('8 cấp đúng mốc, cấp 8 vẫn tích điểm', () => {
 test('tách điểm Danh Tướng/Quân Sư; ăn lan, chiêu hàng, quân mình', () => {
   const { M } = runtime(), [g, s] = M.calculate(match());
   assert.equal(g.captures, 2); assert.equal(g.points, 160);
-  assert.equal(s.captures, 3); assert.equal(s.points, 150);
+  assert.equal(s.captures, 3); assert.equal(s.points, 160); assert.equal(s.perkCaptures, 1);
 });
 test('thua/hoà vẫn nhận điểm ăn quân, máy nhận 50%, loại trận không tính', () => {
   const { M } = runtime();
   assert.equal(M.calculate(match({ result: { winner: 'b' } }))[0].points, 40);
-  assert.equal(M.calculate(match({ result: { winner: null } }))[1].points, 30);
+  assert.equal(M.calculate(match({ result: { winner: null } }))[1].points, 40);
   assert.equal(M.calculate(match({ mode: 'ai' }))[0].points, 80);
   assert.equal(M.calculate(match({ mode: 'local' })), null); assert.equal(M.calculate(match({ ex: false })), null);
 });

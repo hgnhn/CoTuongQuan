@@ -9,6 +9,7 @@
       items: [
         'Thêm thông thạo riêng cho 14 Danh Tướng và 6 Quân Sư, gồm 8 cấp huy hiệu phong cách sơn mài.',
         'Thắng trận và ăn quân nhận điểm; đấu máy nhận 50%. Điểm chỉ có tác dụng trang trí, không tăng sức mạnh.',
+        'Thưởng thêm 10 điểm/quân bị hạ nhờ perk hoặc chiêu của nhân vật, gồm perk Quân Sư ban cho quân và Tử Sĩ của Lê Lai; hiện rõ phần thưởng ở kết quả trận.',
         'Trang Thông thạo có bộ sưu tập, tiến độ, bảng vinh danh trên thiết bị và thẻ để sao chép chia sẻ.',
         'Trang bị danh hiệu và khoe thông thạo trong trận trực tuyến. Kết quả trận hiển thị điểm nhận được và lên cấp.',
         'Chuẩn bị Firebase cho bảng xếp hạng chung từ các trận trực tuyến được hai bên xác nhận; hiện tiến trình lưu trên trình duyệt.',

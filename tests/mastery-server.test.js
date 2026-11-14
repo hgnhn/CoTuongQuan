@@ -17,4 +17,7 @@ assert.throws(() => validateReplay(C, lineups, moves, { ...outcome, resignedBy: 
 const loop = [{from:E.idx(9,1),to:E.idx(7,2)}, {from:E.idx(0,1),to:E.idx(2,2)}, {from:E.idx(7,2),to:E.idx(9,1)}, {from:E.idx(2,2),to:E.idx(0,1)}];
 const draw = validateReplay(C, lineups, loop.concat(loop), { kind: 'board', winner: null });
 assert.equal(draw.awards.r[0].wins, 0); assert.equal(draw.awards.b[1].wins, 0);
-console.log('8 server replay checks passed');
+const active = validateReplay(C, lineups, [{ skill: 'hoacong', from: E.idx(3,0), to: E.idx(3,0), perkCaptures: 9999 }], outcome);
+assert.equal(active.awards.r[1].points, 140); assert.equal(active.awards.r[1].perkCaptures, 1);
+assert.equal(active.awards.r[1].perkBonus, 10);
+console.log('9 server replay checks passed');

@@ -9,9 +9,14 @@ Mỗi hồ sơ có tiến trình riêng cho 14 Danh Tướng và 6 Quân Sư. Hu
 | Thắng trận trực tuyến | +120 | +120 |
 | Danh Tướng tự ăn một quân địch | +20 | +10 |
 | Quân khác hoặc chiêu của đội ăn một quân địch | 0 | +10 |
+| Quân bị hạ nhờ perk/chiêu của chính nhân vật | **Thêm +10/quân** | **Thêm +10/quân** |
 
 - Đấu máy nhận 50% số điểm trên. Thua/hoà vẫn nhận điểm ăn quân.
-- Ăn lan tính theo số quân địch thực sự bị tiêu diệt. Không tính quân mình chết theo, Tướng, hay Tâm Công (chiêu hàng).
+- Ăn lan tính theo số quân địch thực sự bị tiêu diệt; mỗi quân chỉ tính một lần cho mỗi nguồn thưởng. Không tính Tướng hay Tâm Công (chiêu hàng).
+- Thưởng perk của Danh Tướng chỉ tính khi perk thực sự giúp hạ quân (ví dụ Pháo Chéo/Song Ngòi của Archimedes, Thiên Lý Mã vượt cản của Quan Vũ). Nước ăn vốn đã làm được khi bỏ perk Danh Tướng không nhận thưởng perk.
+- Quân Sư nhận thưởng cho chiêu diệt quân (Mượn Gió Đông, Salamis), perk được ban thêm giúp ăn quân (Xung Phong/lùi của Ngô Thì Nhậm), hoặc hiệu ứng của mình giúp nước ăn trở thành hợp lệ (ví dụ Phong Toả vô hiệu nguồn chiếu). Dùng chiêu không hạ quân thì không cộng thưởng.
+- Tử Sĩ kéo quân địch chết theo được ghi cho bên sở hữu Sĩ. Nếu là Lê Lai thì Lê Lai nhận cả điểm ăn quân và thưởng perk, Quân Sư cùng bên nhận điểm quân địch bị hạ. Không cộng cho bên mất quân.
+- Phần thưởng perk cộng ngoài điểm ăn quân cơ bản, áp dụng hệ số 50% khi đấu máy và hiển thị riêng trên bảng kết quả. Ví dụ Archimedes ăn một quân nhờ Song Ngòi: 20 + 10 = 30 điểm; Gia Cát Lượng diệt một Tốt bằng chiêu: 10 + 10 = 20 điểm. Tiến trình lưu thêm số quân hạ bằng perk, tương thích dữ liệu cũ.
 - Chỉ chốt khi trận kết thúc, từ lịch sử cuối cùng; đi lại trong trận không cộng trùng. Trận đã chốt không được đi lại. Hai người một máy và sảnh thường không cộng điểm.
 - Mã trận chống cộng lại cùng một kết quả; giữ 1.000 biên nhận gần nhất trên thiết bị.
 
@@ -66,6 +71,7 @@ Không gửi số điểm từ client lên máy chủ. Điểm cục bộ/đấu
 ```bash
 node tests/engine.test.js
 node tests/mastery.test.js
+node tests/mastery-perks.test.js
 node tests/mastery-server.test.js
 node tests/mastery-functions.test.js
 ```

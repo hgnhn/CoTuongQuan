@@ -992,6 +992,7 @@
       const u = h.u;
       if (u.captured && u.captured.s !== side) captured.push(u.captured);
       for (const q of u.extra) if (q.s !== side) captured.push(q);
+      if (u.died && u.fromPiece && u.fromPiece.s !== side) captured.push(u.fromPiece);
       if (u.converted && u.converted.s !== side) captured.push(u.converted);
     }
     const chips = CTQ.PIECE_ORDER.map((t) => {

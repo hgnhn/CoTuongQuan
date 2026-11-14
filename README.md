@@ -75,6 +75,7 @@ Chân dung được vẽ bằng SVG trong [`js/portraits.js`](js/portraits.js). 
 ```bash
 node tests/engine.test.js
 node tests/mastery.test.js
+node tests/mastery-perks.test.js
 node tests/mastery-server.test.js
 node tests/mastery-functions.test.js
 ```

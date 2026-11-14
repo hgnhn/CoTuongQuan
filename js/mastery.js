@@ -12,7 +12,7 @@
     { level: 5, min: 3200, name: 'Lão Luyện' }, { level: 6, min: 5200, name: 'Đại Sư' },
     { level: 7, min: 8000, name: 'Tông Sư' }, { level: 8, min: 12000, name: 'Huyền Thoại' },
   ];
-  M.SCORING = { win: 120, generalCapture: 20, teamCapture: 10 };
+  M.SCORING = { win: 120, generalCapture: 20, teamCapture: 10, perkCapture: 10 };
   M.character = (key) => {
     if (typeof key !== 'string') return null;
     const [kind, id, extra] = key.split(':');
@@ -23,7 +23,7 @@
     .concat(C.STRATEGISTS.map((s) => ({ key: 's:' + s.id, kind: 's', hero: s })));
   M.stats = (v) => {
     v = v && typeof v === 'object' ? v : {};
-    return { points: integer(v.points), wins: integer(v.wins), captures: integer(v.captures), matches: integer(v.matches) };
+    return { points: integer(v.points), wins: integer(v.wins), captures: integer(v.captures), perkCaptures: integer(v.perkCaptures), matches: integer(v.matches) };
   };
   M.tier = (points) => {
     points = integer(points);
@@ -32,22 +32,68 @@
       remaining: next ? next.min - points : 0,
       progress: next ? (points - current.min) / (next.min - current.min) : 1 };
   };
+  const victimsOf = (u) => [...new Set([u.captured].concat(u.extra || [], u.died ? [u.fromPiece] : []))]
+    .filter((p) => p && p.t !== 'K' && (p.s !== u.side || (u.died && p === u.fromPiece)));
+  // Đối chiếu cùng nước đi khi bỏ đúng nguồn perk; không ảnh hưởng engine/AI.
+  // So quân thực sự mất bằng danh tính quân, nên mỗi nạn nhân ăn lan chỉ tính một lần.
+  M.captureCredit = (before, u, lineups) => {
+    const credits = { r: { general: 0, team: 0, generalPerk: 0, strategistPerk: 0 }, b: { general: 0, team: 0, generalPerk: 0, strategistPerk: 0 } };
+    const victims = victimsOf(u), cache = new Map();
+    if (!victims.length) return credits;
+    function without(kind, side) {
+      const key = kind + side;
+      if (cache.has(key)) return cache.get(key);
+      const E = C.Engine, alternate = E.cloneState(before);
+      if (kind === 'g') {
+        const gen = C.generalById(before.ex.gen[side]);
+        const strat = C.strategistById(before.ex.strat[side]);
+        E.pieceSet(alternate, u.fromPiece);
+        alternate.sets = { r: { ...alternate.sets.r }, b: { ...alternate.sets.b } };
+        alternate.sets[side].G = new Set(strat?.passive.grants?.[gen.type] || []);
+      } else {
+        alternate.ex.strat = { ...alternate.ex.strat, [side]: null };
+        alternate.ex.frz[E.other(side)] = null;
+        alternate.ex.shd[side] = -1;
+        delete alternate.sets; delete alternate.flags;
+      }
+      const moves = u.m.skill ? E.genSkillMoves(alternate, alternate.turn, u.m.skill) : E.legalMovesFrom(alternate, u.m.from);
+      const move = moves.find((m) => m.from === u.m.from && m.to === u.m.to && !!m.swap === !!u.m.swap && (m.skill || null) === (u.m.skill || null));
+      const remaining = new Set(move ? victimsOf(E.makeMove(alternate, move)) : []);
+      cache.set(key, remaining); return remaining;
+    }
+    for (const victim of victims) {
+      const side = victim.s === 'r' ? 'b' : 'r', lo = lineups?.[side];
+      if (!lo) continue;
+      const counter = u.died && victim === u.fromPiece;
+      const killer = counter ? u.toPiece : (!u.m.skill ? u.fromPiece : null);
+      const general = killer?.g === lo.general.id && (counter ? u.toPiece?.s : u.side) === side;
+      const credit = credits[side]; credit.team++;
+      if (general) credit.general++;
+      if (before?.ex) {
+        if (general && !without('g', side).has(victim)) credit.generalPerk++;
+        if (C.strategistById(before.ex.strat[side]) && !without('s', side).has(victim)) credit.strategistPerk++;
+      } else if (u.side === side && u.m.skill && C.strategistById(lo.strategist)?.actives.some((a) => a.skill === u.m.skill)) {
+        credit.strategistPerk++;
+      }
+    }
+    return credits;
+  };
   M.calculate = ({ mode, ex, side, lineups, history, result }) => {
     if (!ex || !['ai', 'online'].includes(mode) || !['r', 'b'].includes(side) || !result) return null;
     const lo = lineups && lineups[side];
     if (!lo || !C.generalById(lo.general && lo.general.id) || !C.strategistById(lo.strategist)) return null;
-    let generalCaptures = 0, teamCaptures = 0;
+    let generalCaptures = 0, teamCaptures = 0, generalPerk = 0, strategistPerk = 0;
     for (const h of history || []) {
       const u = h.u;
-      if (!u || u.side !== side) continue;
-      const victims = [u.captured].concat(u.extra || []).filter((p) => p && p.s !== side && p.t !== 'K').length;
-      teamCaptures += victims;
-      if (!u.m.skill && u.fromPiece && u.fromPiece.g === lo.general.id) generalCaptures += victims;
+      if (!u) continue;
+      const credit = M.captureCredit(h.before, u, lineups)[side];
+      generalCaptures += credit.general; teamCaptures += credit.team;
+      generalPerk += credit.generalPerk; strategistPerk += credit.strategistPerk;
     }
     const won = result.winner === side, scale = mode === 'ai' ? 0.5 : 1;
     return [
-      { key: 'g:' + lo.general.id, points: Math.floor((generalCaptures * M.SCORING.generalCapture + (won ? M.SCORING.win : 0)) * scale), captures: generalCaptures, wins: +won, matches: 1 },
-      { key: 's:' + lo.strategist, points: Math.floor((teamCaptures * M.SCORING.teamCapture + (won ? M.SCORING.win : 0)) * scale), captures: teamCaptures, wins: +won, matches: 1 },
+      { key: 'g:' + lo.general.id, points: Math.floor((generalCaptures * M.SCORING.generalCapture + generalPerk * M.SCORING.perkCapture + (won ? M.SCORING.win : 0)) * scale), captures: generalCaptures, perkCaptures: generalPerk, perkBonus: generalPerk * M.SCORING.perkCapture * scale, wins: +won, matches: 1 },
+      { key: 's:' + lo.strategist, points: Math.floor((teamCaptures * M.SCORING.teamCapture + strategistPerk * M.SCORING.perkCapture + (won ? M.SCORING.win : 0)) * scale), captures: teamCaptures, perkCaptures: strategistPerk, perkBonus: strategistPerk * M.SCORING.perkCapture * scale, wins: +won, matches: 1 },
     ];
   };
   M.addStats = (a, b) => {

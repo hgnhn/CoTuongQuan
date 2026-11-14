@@ -25,7 +25,7 @@
 .mastery-feature progress::-webkit-progress-bar { background: #1a100d; border-radius: 8px; }
 .mastery-feature progress::-webkit-progress-value { background: linear-gradient(90deg, #916a29, var(--gold-soft)); border-radius: 8px; }
 .mastery-feature progress::-moz-progress-bar { background: var(--gold); border-radius: 8px; }
-.mastery-facts { display: flex; gap: 24px; font-size: .8rem; color: var(--egg-dim); }
+.mastery-facts { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: .8rem; color: var(--egg-dim); }
 .mastery-facts strong { color: var(--egg); }
 .mastery-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .mastery-levels { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); margin: 26px 0 38px; gap: 5px; }
@@ -62,6 +62,7 @@
 .mastery-receipt h3 { font-family: var(--f-display); color: var(--gold-soft); margin: 0 0 12px; }
 .mastery-receipt > div { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
 .mastery-receipt .mastery-gain { margin-left: auto; color: var(--gold-soft); }
+.mastery-perk-bonus { color: var(--gold-soft); font-size: .75rem; }
 .mastery-editor { display: flex; align-items: center; gap: 5px; margin: 8px 0; }
 .mastery-mini-label { color: var(--gold-soft); font-size: .75rem; }
 .mastery-signature { display: inline-flex; align-items: center; gap: 3px; font-size: .65rem; color: var(--gold-soft); }

@@ -10,8 +10,8 @@ function validateReplay(C, lineups, moves, outcome) {
     if (!input || !Number.isInteger(input.from) || !Number.isInteger(input.to)) throw new Error('Nước đi không hợp lệ.');
     const move = E.legalMoves(st).find((m) => m.from === input.from && m.to === input.to && !!m.swap === !!input.swap && (m.skill || null) === (input.skill || null));
     if (!move) throw new Error('Nước đi trái luật.');
-    const u = E.makeMove(st, move), key = E.positionKey(st), gaveCheck = E.inCheck(st, st.turn);
-    history.push({ u, mover: u.side, gaveCheck }); canonical.push({ from: move.from, to: move.to, swap: !!move.swap, skill: move.skill || null }); keys.push(key);
+    const before = E.cloneState(st), u = E.makeMove(st, move), key = E.positionKey(st), gaveCheck = E.inCheck(st, st.turn);
+    history.push({ before, u, mover: u.side, gaveCheck }); canonical.push({ from: move.from, to: move.to, swap: !!move.swap, skill: move.skill || null }); keys.push(key);
     quiet = u.captured || u.extra.length || u.converted ? 0 : quiet + 1;
     const status = E.status(st);
     if (status.over) terminal = { winner: status.winner };

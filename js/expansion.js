@@ -11,7 +11,6 @@
   // Perk riêng của Danh Tướng (perk thường dùng lại id trong data.js)
   CTQ.GPERKS = {
     g_xuatcung: { name: 'Xuất Cung Thân Chinh', desc: 'Đi 1 ô ngang/dọc/chéo trong cung và được bước ra thêm 1 hàng phía trước cung.' },
-    g_hichtuongsi: { name: 'Hịch Tướng Sĩ', desc: 'Mọi Tốt của bạn có thêm perk Xung Phong (tiến 2 ô khi chưa qua sông).' },
     g_cuoivoi: { name: 'Cưỡi Voi Xung Trận', desc: 'Được đi thẳng 1–2 ô theo hàng ngang/dọc (bị chặn bởi quân trên đường), ăn được quân đầu tiên gặp.' },
     g_thuai: { name: 'Thủ Ải Thermopylae', desc: 'Pháo địch không thể chiếu hay ăn quân này.' },
     g_thethan: { name: 'Liều Mình Cứu Chúa', desc: 'Khi Tướng mình đang bị chiếu, đổi chỗ với Tướng nếu đứng sát bên (Tướng vẫn phải ở trong cung).' },

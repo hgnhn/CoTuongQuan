@@ -63,7 +63,7 @@ Script đo (1) số nước đi tăng thêm của mỗi perk trên các thế c�
 
 ## Nhật ký cập nhật
 
-Mỗi lần cập nhật game, thêm một mục mới **lên đầu** mảng `CTQ.CHANGELOG` trong [`js/changelog.js`](js/changelog.js). Sảnh tự hiển thị mục mới nhất kèm nhãn "Mới".
+Mỗi lần cập nhật game, thêm một mục mới **lên đầu** mảng `CTQ.CHANGELOG` trong [`js/changelog.js`](js/changelog.js), rồi chạy `node scripts/version-assets.cjs` và commit cả `index.html`. Script gắn phiên bản vào URL của mọi file JS/CSS để tránh cache cũ trên trình duyệt/CDN. Sảnh tự hiển thị mục mới nhất kèm nhãn "Mới" và nút **Tải bản mới**. Nếu HTML vẫn bị cache sau deploy, mở trang với query mới, ví dụ `/?v=0.4.2`; không cần xoá localStorage hay dữ liệu tài khoản.
 
 ## Chân dung Danh Tướng & Quân Sư
 

@@ -5,6 +5,14 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.4.2', date: '14/11/2026', title: 'Sửa tải bản cập nhật',
+      items: [
+        'Thêm mã phiên bản cho toàn bộ JavaScript và CSS để trình duyệt tải đúng bản mới sau deploy.',
+        'Thêm nút Tải bản mới ở nhật ký cập nhật để tải lại trang và tài nguyên mới nhất.',
+        'Bản này đã có Hoả Công giảm sức mạnh và Archimedes dùng Pháo Chéo + Song Ngòi.',
+      ],
+    },
+    {
       v: '0.4.1', date: '14/11/2026', title: 'Cân bằng Hoả Công và Archimedes',
       items: [
         'Hoả Công: ô ngay sau mục tiêu vẫn thiêu mọi quân địch trừ Tướng; 2 ô bên chỉ thiêu Tốt, Sĩ, Tượng.',

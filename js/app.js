@@ -10,7 +10,7 @@
   const QUIET_LIMIT = 120; // 60 nước mỗi bên không ăn quân thì hoà
   const SETUP_TIME = { normal: 60, ex: 90 }; // giây chuẩn bị
   const COUNTDOWN = 3;
-  const PROTO = 3; // phiên bản giao thức/luật trực tuyến (cân bằng 0.4.1)
+  const PROTO = 4; // phiên bản giao thức/luật trực tuyến (thông thạo 0.5.0)
 
   // ---------------- Lưu trữ ----------------
   const store = {
@@ -40,6 +40,7 @@
     if (id === 'menu') { renderMenu(); renderAccount(); renderInviteBanner(); }
     if (id === 'army') renderArmy();
     if (id === 'rules') renderRules();
+    if (id === 'mastery') CTQ.MasteryView.render();
   }
 
   // ---------------- Hộp thoại ----------------
@@ -113,6 +114,7 @@
     if (act === 'menu') show('menu');
     else if (act === 'army') show('army');
     else if (act === 'rules') show('rules');
+    else if (act === 'mastery') show('mastery');
     else if (act === 'ai') setupAI();
     else if (act === 'local') startSetup({ mode: 'local', ex: lobby === 'ex', names: { r: 'Người chơi 1', b: 'Người chơi 2' }, mySide: null });
     else if (act === 'online') setupOnline();
@@ -343,8 +345,10 @@
       if (!room || !room.isHost) return; // khách chờ lệnh 'go' từ chủ phòng
       const hostSide = c.mySide;
       const lu = { [hostSide]: setup.lo.me, [E.other(hostSide)]: setup.lo.opp };
-      room.send({ type: 'go', lineups: lu, names: c.names, hostSide, ex: c.ex });
-      beginCountdown({ mode: 'online', ex: c.ex, lineups: lu, names: c.names, mySide: hostSide });
+      const players = { [hostSide]: { uid: Auth.user?.uid, name: myName() }, [E.other(hostSide)]: { uid: room.peerUid, name: room.peerName } };
+      const matchId = CTQ.Mastery.newId();
+      room.send({ type: 'go', lineups: lu, names: c.names, hostSide, ex: c.ex, matchId, players });
+      beginCountdown({ mode: 'online', ex: c.ex, lineups: lu, names: c.names, mySide: hostSide, matchId, players });
       return;
     }
     let lu;
@@ -442,6 +446,7 @@
 
   Auth.onChange(() => {
     renderAccount();
+    if (current === 'mastery') CTQ.MasteryView.render();
     if (Auth.user) {
       playerName = Auth.user.name;
       if ($('#screen-login').classList.contains('is-active')) {
@@ -537,6 +542,7 @@
           return;
         }
         room.peerName = String(msg.name || 'Đối thủ').slice(0, 20);
+        room.peerUid = typeof msg.uid === 'string' ? msg.uid : null;
         hostSetup(Math.random() < 0.5 ? 'r' : 'b');
       } else onNetMessage(msg);
     });
@@ -583,6 +589,7 @@
       stopSetupTimer(); setup = null; leaveRoom(); show('menu');
       dialog({ title: 'Đối thủ đã rời phòng', body: `<p>${esc(reason)}</p>`, buttons: [{ label: 'Đóng', value: 'ok', primary: true }] });
     } else if (game && game.mode === 'online' && !game.over) {
+      game.netClosed = true;
       endGame({ winner: game.mySide, reason: 'Đối thủ đã rời trận' });
     } else if (game && game.mode === 'online') {
       game.netClosed = true;
@@ -625,7 +632,7 @@
         if (!setup || room.isHost) return;
         const mySide = E.other(msg.hostSide);
         const lu = { r: CTQ.sanitizeExLoadout(msg.lineups && msg.lineups.r), b: CTQ.sanitizeExLoadout(msg.lineups && msg.lineups.b) };
-        beginCountdown({ mode: 'online', ex: !!msg.ex, lineups: lu, names: setup.cfg.names, mySide });
+        beginCountdown({ mode: 'online', ex: !!msg.ex, lineups: lu, names: setup.cfg.names, mySide, matchId: String(msg.matchId || '').slice(0, 100), players: msg.players });
         break;
       }
       case 'bye':
@@ -640,7 +647,26 @@
         break;
       }
       case 'resign':
-        if (game && game.mode === 'online' && !game.over) endGame({ winner: game.mySide, reason: 'Đối thủ đầu hàng' });
+        if (game && game.mode === 'online' && !game.over) endGame({ winner: game.mySide, reason: 'Đối thủ đầu hàng', resignedBy: E.other(game.mySide) });
+        break;
+      case 'mastery-showcase':
+        if (!game || !game.ex || game.mode !== 'online' || msg.matchId !== game.matchId) return;
+        game.masteryOpponent = CTQ.Mastery.sanitizeSnapshot(msg.snapshot);
+        if (!game.masteryHandshake) {
+          game.masteryHandshake = true;
+          room.send({ type: 'mastery-showcase', matchId: game.matchId, snapshot: CTQ.Mastery.snapshot(game.masteryUser, game.cfg.lineups[game.mySide]) });
+          if (room.isHost && game.cloudMatchId) room.send({ type: 'mastery-match', matchId: game.matchId, cloudId: game.cloudMatchId });
+        }
+        if (msg.emote && Date.now() - game.lastOpponentEmote > 6000) {
+          game.lastOpponentEmote = Date.now();
+          const badge = game.masteryOpponent.showcase;
+          if (badge) showMasteryEmote(game.masteryOpponent, game.names[E.other(game.mySide)]);
+        }
+        renderGame();
+        break;
+      case 'mastery-match':
+        if (!game || !game.ex || game.mode !== 'online' || room.isHost || msg.matchId !== game.matchId || typeof msg.cloudId !== 'string') return;
+        game.cloudMatchId = msg.cloudId.slice(0, 100); submitMasteryCloud(game);
         break;
       case 'rematch':
         if (!game) return;
@@ -679,11 +705,28 @@
       thinking: false,
       flip: cfg.mySide === 'b',
       info: null,
+      matchId: cfg.matchId || CTQ.Mastery.newId(),
+      masteryUser: Auth.user ? { ...Auth.user } : null,
+      masteryOpponent: null,
+      masteryReceipt: null,
+      lastOpponentEmote: 0,
+      lastMasteryEmote: 0,
     };
     if (!gameBoard) gameBoard = new CTQ.BoardView($('#game-board'), { onSquare: onSquare });
     gameBoard.flip = game.flip;
     show('game');
     renderGame();
+    if (game.ex && game.mode === 'online' && room) {
+      const g = game;
+      room.send({ type: 'mastery-showcase', matchId: g.matchId, snapshot: CTQ.Mastery.snapshot(g.masteryUser, g.cfg.lineups[g.mySide]) });
+      if (room.isHost && CTQ.MasteryCloud.enabled() && Auth.user?.provider === 'google') {
+        CTQ.MasteryCloud.open(cfg.players, cfg.lineups).then((r) => {
+          if (game !== g || !room) return;
+          g.cloudMatchId = r.id;
+          room.send({ type: 'mastery-match', matchId: g.matchId, cloudId: r.id }); submitMasteryCloud(g);
+        }).catch(() => { if (game === g) toast('Chưa kết nối bảng xếp hạng chung; thông thạo vẫn lưu trên thiết bị.'); });
+      }
+    }
     maybeAI();
   }
 
@@ -836,7 +879,11 @@
   }
 
   function endGame(result) {
+    if (game.over) return;
     game.over = result;
+    game.masteryReceipt = CTQ.Mastery.award({ id: game.matchId, user: game.masteryUser, mode: game.mode,
+      ex: game.ex, side: game.mySide, lineups: game.cfg.lineups, history: game.history, result });
+    submitMasteryCloud(game);
     game.selected = -1; game.moves = []; game.skill = null;
     renderGame();
     let title;
@@ -847,12 +894,22 @@
       if (!game || game.over !== result) return;
       const v = await dialog({
         title,
-        body: `<p>${esc(result.reason)}${result.winner ? ` — ${esc(game.names[result.winner])} (${SIDE_NAME[result.winner]}) giành chiến thắng.` : '.'}</p>`,
+        body: `<p>${esc(result.reason)}${result.winner ? ` — ${esc(game.names[result.winner])} (${SIDE_NAME[result.winner]}) giành chiến thắng.` : '.'}</p>${CTQ.MasteryView.receipt(game.masteryReceipt)}`,
         buttons: [{ label: 'Xem lại bàn cờ', value: 'stay' }, { label: 'Về sảnh', value: 'menu' }, { label: 'Đấu lại', value: 'again', primary: true }],
       });
       if (v === 'menu') leaveGame(true);
       else if (v === 'again') rematch();
     }, 650);
+  }
+
+  function submitMasteryCloud(g) {
+    if (!g.ex || g.mode !== 'online' || !g.over || !g.cloudMatchId || g.cloudSubmitted || !CTQ.MasteryCloud.enabled()) return;
+    if (g.masteryUser?.provider !== 'google' || g.netClosed) return;
+    const outcome = g.over.resignedBy ? { kind: 'resign', resignedBy: g.over.resignedBy, winner: g.over.winner } : { kind: 'board', winner: g.over.winner };
+    g.cloudSubmitted = true;
+    CTQ.MasteryCloud.submit(g.cloudMatchId, g.history.map((h) => h.u.m), outcome).then((r) => {
+      if (game === g) toast(r.awarded ? 'Đã cập nhật điểm trực tuyến trên bảng vinh danh.' : 'Đã gửi chiến công; chờ đối thủ xác nhận để lên bảng chung.');
+    }).catch(() => { if (game === g) toast('Chưa gửi được bảng chung. Điểm thông thạo trên thiết bị đã được giữ lại.'); });
   }
 
   // Đấu lại: quay về phòng chuẩn bị, đổi màu quân
@@ -880,7 +937,10 @@
   }
 
   function leaveGame(force) {
-    const go = () => { leaveRoom(); game = null; show('menu'); };
+    const go = () => {
+      if (game && game.mode === 'online' && !game.over) endGame({ winner: E.other(game.mySide), reason: 'Rời trận', resignedBy: game.mySide });
+      leaveRoom(); game = null; show('menu');
+    };
     if (force || !game || game.over || game.history.length === 0) {
       if (game && game.mode === 'online' && room && !game.over) room.send({ type: 'resign' });
       return go();
@@ -898,7 +958,7 @@
   $('#btn-leave').addEventListener('click', () => leaveGame(false));
   $('#btn-flip').addEventListener('click', () => { if (!game) return; game.flip = !game.flip; gameBoard.flip = game.flip; renderGame(); });
   $('#btn-undo').addEventListener('click', () => {
-    if (!game || game.mode === 'online' || game.thinking || game.history.length === 0) return;
+    if (!game || game.over || game.mode === 'online' || game.thinking || game.history.length === 0) return;
     let n = 1;
     if (game.mode === 'ai') {
       // lùi về lượt của người chơi gần nhất
@@ -921,7 +981,7 @@
     if (v !== 'yes' || !game || game.over) return;
     const loser = game.mode === 'local' ? game.state.turn : game.mySide;
     if (game.mode === 'online' && room) room.send({ type: 'resign' });
-    endGame({ winner: E.other(loser), reason: `${SIDE_NAME[loser]} đầu hàng` });
+    endGame({ winner: E.other(loser), reason: `${SIDE_NAME[loser]} đầu hàng`, resignedBy: loser });
   });
 
   function playerCard(side) {
@@ -941,6 +1001,9 @@
         <span class="mini-glyph side-${side}">${CTQ.PIECES[t].glyph[side]}</span>${esc(perk.name)}</button>`;
     }).join('');
     let exRow = '';
+    const snapshot = game.mode !== 'local' && side === game.mySide
+      ? CTQ.Mastery.snapshot(game.masteryUser, game.cfg.lineups[side]) : game.masteryOpponent;
+    const masteryBadge = (key) => snapshot?.heroes[key] ? CTQ.MasteryView.badge(snapshot.heroes[key].points, 'is-chip') : '';
     if (st.ex) {
       const g = CTQ.generalById(st.ex.gen[side]), s = CTQ.strategistById(st.ex.strat[side]);
       const mine = controls(side) && st.turn === side;
@@ -952,15 +1015,15 @@
           title="${esc(CTQ.SKILLS[a.skill].desc)}"><strong>${esc(CTQ.skillName(a))}</strong><span>${label}</span></button>`;
       }).join('') : '';
       exRow = `<div class="pc-ex">
-        ${g ? `<button type="button" class="hero-chip" data-hero="g${side}"><span class="hc-pt">${CTQ.portraitHTML(g)}</span><span><span class="muted">Danh Tướng</span>${esc(g.short)}</span></button>` : ''}
-        ${s ? `<button type="button" class="hero-chip" data-hero="s${side}"><span class="hc-pt">${CTQ.portraitHTML(s)}</span><span><span class="muted">Quân Sư</span>${esc(s.name)}</span></button>` : ''}
+        ${g ? `<button type="button" class="hero-chip" data-hero="g${side}"><span class="hc-pt">${CTQ.portraitHTML(g)}</span><span><span class="muted">Danh Tướng</span>${esc(g.short)}</span>${masteryBadge('g:' + g.id)}</button>` : ''}
+        ${s ? `<button type="button" class="hero-chip" data-hero="s${side}"><span class="hc-pt">${CTQ.portraitHTML(s)}</span><span><span class="muted">Quân Sư</span>${esc(s.name)}</span>${masteryBadge('s:' + s.id)}</button>` : ''}
         <div class="skills">${skills}</div>
       </div>`;
     }
     const you = game.mode !== 'local' && side === game.mySide ? ' (bạn)' : '';
     return `<div class="pc-head ${active ? 'is-active' : ''}">
         <span class="side-dot side-${side}"></span>
-        <span class="pc-name">${esc(game.names[side])}${you}</span>
+        <span class="pc-name">${esc(game.names[side])}${you}</span>${game.ex && snapshot?.showcase ? `<span class="mastery-signature" title="${esc(CTQ.Mastery.character(snapshot.showcase.key).name)} · Thông thạo trên thiết bị">${CTQ.MasteryView.badge(snapshot.showcase.points, 'is-chip')} ${esc(CTQ.Mastery.character(snapshot.showcase.key).short || CTQ.Mastery.character(snapshot.showcase.key).name)}</span>` : ''}
         <span class="pc-side">${SIDE_NAME[side]}</span>
         <span class="pc-caps" aria-label="Quân đã ăn">${captured.map((p) => `<span class="mini-glyph side-${p.s}">${CTQ.PIECES[p.t].glyph[p.s]}</span>`).join('')}</span>
       </div>
@@ -1027,7 +1090,9 @@
     list.scrollTop = list.scrollHeight;
 
     $('#btn-undo').hidden = game.mode === 'online';
-    $('#btn-undo').disabled = game.history.length === 0 || game.thinking;
+    $('#btn-undo').disabled = !!game.over || game.history.length === 0 || game.thinking;
+    $('#btn-mastery-emote').hidden = !game.ex || game.mode === 'local';
+    $('#btn-mastery-emote').disabled = game.mode === 'online' && !!game.netClosed;
     const rb = $('#btn-resign');
     rb.textContent = game.over ? (game.rematchThem ? 'Đồng ý đấu lại' : 'Đấu lại') : 'Đầu hàng';
     rb.disabled = !!(game.over && game.mode === 'online' && (game.rematchMe || game.netClosed));
@@ -1084,6 +1149,23 @@
     else if (game.selected >= 0) { game.selected = -1; game.moves = []; renderGame(); }
   });
 
+  CTQ.MasteryView.init({ user: () => Auth.user, toast });
+  function showMasteryEmote(snapshot, name) {
+    const badge = snapshot.showcase; if (!badge) return;
+    const wrap = $('#screen-game .game-board-wrap');
+    wrap.querySelector('.mastery-emote')?.remove();
+    const el = document.createElement('div'); el.className = 'mastery-emote'; el.setAttribute('role', 'status');
+    el.innerHTML = `${CTQ.MasteryView.badge(badge.points, 'is-large')}<strong>${esc(CTQ.Mastery.character(badge.key).name)}</strong><span>${esc(name)} · Thông thạo ${CTQ.Mastery.tier(badge.points).level}</span>`;
+    wrap.appendChild(el); setTimeout(() => el.remove(), 2800);
+  }
+  $('#btn-mastery-emote').addEventListener('click', () => {
+    if (!game || !game.ex || Date.now() - game.lastMasteryEmote < 6000) return;
+    const snapshot = CTQ.Mastery.snapshot(game.masteryUser, game.cfg.lineups[game.mySide]);
+    if (!snapshot.showcase) { toast('Vào mục Thông thạo ở sảnh để chọn danh hiệu muốn khoe.'); return; }
+    game.lastMasteryEmote = Date.now();
+    showMasteryEmote(snapshot, game.names[game.mySide]);
+    if (game.mode === 'online' && room) room.send({ type: 'mastery-showcase', matchId: game.matchId, snapshot, emote: true });
+  });
   readInviteFromURL();
   show('menu');
   Auth.init().then(() => {

@@ -581,7 +581,7 @@ button.mark-sq.target:hover::after { transform: scale(1.2); }
   border-radius: 999px; border: 1px solid rgba(201, 162, 74, 0.5); background: var(--lacquer-2);
   font-size: 0.8125rem; font-weight: 600; text-align: left;
 }
-.hero-chip > span:last-child { display: grid; line-height: 1.15; }
+.hero-chip > span:nth-child(2) { display: grid; line-height: 1.15; }
 .hero-chip .muted { font-size: 0.6875rem; font-weight: 400; }
 .hc-pt, .hc-pt .portrait { width: 30px; height: 30px; display: block; flex: none; }
 .skills { display: flex; flex-wrap: wrap; gap: 6px; }

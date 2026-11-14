@@ -201,6 +201,7 @@
             <h2>${esc(sel.name)}</h2>
             <p class="muted">${CTQ.PIECES[sel.type].name} · ${esc(sel.era)}</p>
             <p class="gen-bio">${esc(sel.bio)}</p>
+            <p class="mastery-editor">${CTQ.MasteryView.mini(CTQ.Auth.user, 'g:' + sel.id)} <span class="muted">${CTQ.Mastery.get(CTQ.Auth.user, 'g:' + sel.id).points.toLocaleString('vi-VN')} điểm · chỉ trang trí</span></p>
             <ul class="gen-perks">${sel.perks.map((id) => { const p = CTQ.perkById(id); return `<li><strong>${esc(p.name)}</strong> ${esc(p.desc)}</li>`; }).join('')}</ul>
             ${slots.length > 1 ? `<div class="slot-row"><span class="muted">Vị trí:</span>${slots.map((sq, i) => `<button type="button" class="chip ${lo.general.slot === i ? 'is-on' : ''}" data-slot="${i}">${CTQ.PIECES[sel.type].name} ${colLabel(sq)}</button>`).join('')}</div>` : ''}
           </div>
@@ -232,6 +233,7 @@
             <span class="sc-portrait">${CTQ.portraitHTML(s)}</span>
             <span class="sc-body">
               <span class="sc-name">${esc(s.name)} <span class="muted">${esc(s.era)}</span></span>
+              <span class="mastery-editor">${CTQ.MasteryView.mini(CTQ.Auth.user, 's:' + s.id)} <span class="muted">${CTQ.Mastery.get(CTQ.Auth.user, 's:' + s.id).points.toLocaleString('vi-VN')} điểm</span></span>
               <span class="sc-line"><span class="tag tag-passive">Nội tại</span><strong>${esc(s.passive.name)}</strong> ${esc(s.passive.desc)}</span>
               ${s.actives.map((a) => `<span class="sc-line"><span class="tag">Chiêu</span><strong>${esc(CTQ.skillName(a))}</strong> ${esc(CTQ.SKILLS[a.skill].desc)} <em>${usesText(a)}.</em></span>`).join('')}
             </span>

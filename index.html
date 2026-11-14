@@ -9,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&text=%E5%B8%A5%E4%BB%95%E7%9B%B8%E4%BF%A5%E7%82%AE%E5%82%8C%E5%85%B5%E5%B0%87%E5%A3%AB%E8%B1%A1%E8%BB%8A%E7%A0%B2%E9%A6%AC%E5%8D%92%E6%A5%9A%E6%B2%B3%E6%BC%A2%E7%95%8C&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=0.4.2">
+  <link rel="stylesheet" href="css/style.css?v=0.5.0">
+  <link rel="stylesheet" href="css/mastery.css?v=0.5.0">
   <link rel="canonical" href="https://cotuongquan.bananalab.id.vn/">
   <meta property="og:title" content="Cờ Tướng Quân">
   <meta property="og:description" content="Cờ tướng với đội hình tuỳ chỉnh: trang bị perk cho từng loại quân rồi vào trận.">
@@ -51,6 +52,10 @@
         <button class="menu-item" data-action="rules">
           <span class="mi-name">Luật chơi</span>
           <span class="mi-desc">Cách đi của từng quân và toàn bộ perk.</span>
+        </button>
+        <button class="menu-item" data-action="mastery">
+          <span class="mi-name">Thông thạo</span>
+          <span class="mi-desc">Tích chiến công, mở 8 cấp huy hiệu và ghi tên bảng vinh danh.</span>
         </button>
       </nav>
 
@@ -134,6 +139,7 @@
         <ol class="moves" id="move-list"></ol>
         <div class="game-actions">
           <button class="ghost-btn" id="btn-undo">Đi lại</button>
+          <button class="ghost-btn" id="btn-mastery-emote" hidden>Khoe thông thạo</button>
           <button class="ghost-btn" id="btn-flip">Xoay bàn</button>
           <button class="ghost-btn" id="btn-resign">Đầu hàng</button>
           <button class="ghost-btn" id="btn-leave">Về menu</button>
@@ -157,22 +163,30 @@
     </article>
   </main>
 
+  <main id="screen-mastery" class="screen" aria-label="Thông thạo nhân vật">
+    <header class="bar"><button class="ghost-btn" data-action="menu">Về sảnh</button><span class="bar-title">Thông thạo</span><span>BẢN MỞ RỘNG</span></header>
+    <div id="mastery-content" class="mastery-page"></div>
+  </main>
+
   <!-- ============ HỘP THOẠI ============ -->
   <dialog id="dlg" class="dlg">
     <form method="dialog" id="dlg-body"></form>
   </dialog>
 
-  <script src="js/config.js?v=0.4.2"></script>
-  <script src="js/data.js?v=0.4.2"></script>
-  <script src="js/expansion.js?v=0.4.2"></script>
-  <script src="js/engine.js?v=0.4.2"></script>
-  <script src="js/ai.js?v=0.4.2"></script>
-  <script src="js/portraits.js?v=0.4.2"></script>
-  <script src="js/changelog.js?v=0.4.2"></script>
-  <script src="js/board-view.js?v=0.4.2"></script>
-  <script src="js/net.js?v=0.4.2"></script>
-  <script src="js/auth.js?v=0.4.2"></script>
-  <script src="js/editor.js?v=0.4.2"></script>
-  <script src="js/app.js?v=0.4.2"></script>
+  <script src="js/config.js?v=0.5.0"></script>
+  <script src="js/data.js?v=0.5.0"></script>
+  <script src="js/expansion.js?v=0.5.0"></script>
+  <script src="js/engine.js?v=0.5.0"></script>
+  <script src="js/ai.js?v=0.5.0"></script>
+  <script src="js/portraits.js?v=0.5.0"></script>
+  <script src="js/changelog.js?v=0.5.0"></script>
+  <script src="js/board-view.js?v=0.5.0"></script>
+  <script src="js/net.js?v=0.5.0"></script>
+  <script src="js/auth.js?v=0.5.0"></script>
+  <script src="js/mastery.js?v=0.5.0"></script>
+  <script src="js/mastery-cloud.js?v=0.5.0"></script>
+  <script src="js/mastery-view.js?v=0.5.0"></script>
+  <script src="js/editor.js?v=0.5.0"></script>
+  <script src="js/app.js?v=0.5.0"></script>
 </body>
 </html>

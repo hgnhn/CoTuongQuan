@@ -1,0 +1,6 @@
+server/node_modules/
+server/shared/
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+.firebaserc

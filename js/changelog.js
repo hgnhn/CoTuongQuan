@@ -5,6 +5,16 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.5.0', date: '14/11/2026', title: 'Thông thạo: Ấn ký chiến công',
+      items: [
+        'Thêm thông thạo riêng cho 14 Danh Tướng và 6 Quân Sư, gồm 8 cấp huy hiệu phong cách sơn mài.',
+        'Thắng trận và ăn quân nhận điểm; đấu máy nhận 50%. Điểm chỉ có tác dụng trang trí, không tăng sức mạnh.',
+        'Trang Thông thạo có bộ sưu tập, tiến độ, bảng vinh danh trên thiết bị và thẻ để sao chép chia sẻ.',
+        'Trang bị danh hiệu và khoe thông thạo trong trận trực tuyến. Kết quả trận hiển thị điểm nhận được và lên cấp.',
+        'Chuẩn bị Firebase cho bảng xếp hạng chung từ các trận trực tuyến được hai bên xác nhận; hiện tiến trình lưu trên trình duyệt.',
+      ],
+    },
+    {
       v: '0.4.2', date: '14/11/2026', title: 'Sửa tải bản cập nhật',
       items: [
         'Thêm mã phiên bản cho toàn bộ JavaScript và CSS để trình duyệt tải đúng bản mới sau deploy.',

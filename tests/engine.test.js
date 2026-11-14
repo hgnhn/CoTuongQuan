@@ -120,7 +120,7 @@ t('Hoả Công: bắn xuyên quân phía sau mục tiêu', () => {
   const u = E.makeMove(st, { from: E.idx(9, 0), to: E.idx(4, 0) });
   assert.ok(u.extra.length === 1 && !st.board[E.idx(3, 0)]);
 });
-t('Hoả Công: hai ô bên chỉ thiêu Tốt/Sĩ/Tượng, đủ 8 hướng và hai màu', () => {
+t('Hoả Công: chỉ thiêu quân ngay sau lưng mục tiêu, 2 ô bên không bị ảnh hưởng (8 hướng, hai màu)', () => {
   const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]];
   for (const side of ['r', 'b']) for (const [dr, dc] of directions) {
     for (const flanks of [['H', 'C'], ['R', 'H'], ['P', 'A'], ['E', 'P']]) {
@@ -134,19 +134,15 @@ t('Hoả Công: hai ô bên chỉ thiêu Tốt/Sĩ/Tượng, đủ 8 hướng v�
       const perks = { C: 'c_hoacong', R: 'r_phatran' };
       const st = E.createState(perks, perks, b, { r: {}, b: {} });
       st.turn = side;
-      if (dr && dc) {
-        // Kiểm tra hình học Hoả Công độc lập với bộ perk hiện tại của Danh Tướng.
-        E.pieceSet(st, b[E.idx(4, 4)]).add('c_phaocheo');
-      }
+      if (dr && dc) E.pieceSet(st, b[E.idx(4, 4)]).add('c_phaocheo'); // thử cả hướng chéo
       const move = { from: E.idx(4, 4), to: E.idx(4 + 2 * dr, 4 + 2 * dc) };
       assert.ok(E.genPieceMoves(st, move.from).some((m) => m.to === move.to));
       const before = b.slice(), key = E.positionKey(st);
       const u = E.makeMove(st, move);
-      const light = flanks.every((t) => ['P', 'A', 'E'].includes(t));
-      assert.strictEqual(u.extra.length, light ? 3 : 1);
-      assert.strictEqual(b[E.idx(br, bc)], null); // vẫn thiêu Xe ở ô chính
-      assert.strictEqual(b[E.idx(br + dc, bc - dr)], light ? null : before[E.idx(br + dc, bc - dr)]);
-      assert.strictEqual(b[E.idx(br - dc, bc + dr)], light ? null : before[E.idx(br - dc, bc + dr)]);
+      assert.strictEqual(u.extra.length, 1);
+      assert.strictEqual(b[E.idx(br, bc)], null); // quân sau lưng bị thiêu
+      assert.strictEqual(b[E.idx(br + dc, bc - dr)], before[E.idx(br + dc, bc - dr)]);
+      assert.strictEqual(b[E.idx(br - dc, bc + dr)], before[E.idx(br - dc, bc + dr)]);
       E.unmakeMove(st, u);
       assert.deepStrictEqual(st.board, before); assert.strictEqual(E.positionKey(st), key);
     }
@@ -250,12 +246,18 @@ t('Archimedes: giữ giới hạn tầm chéo và chiếu Tướng khi kết h�
   put(b, 7, 4, 'P', 'r'); put(b, 5, 4, 'P', 'r');
   assert.ok(!E.inCheck(st, 'b')); b[E.idx(5, 4)] = null; assert.ok(E.inCheck(st, 'b'));
 });
-t('Achilles: Xe không ăn được, Tốt thì được', () => {
-  const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 4, 0, 'P', 'b');
-  const st = exStateBoard(b, { general: { id: 'achilles' } });
-  assert.ok(!tos(st, 2, 0).includes('5,0'));
-  st.turn = 'b';
-  assert.ok(E.legalMovesFrom(st, E.idx(4, 0)).some((m) => m.to === E.idx(5, 0)));
+t('Achilles: quân ăn chết theo, trừ Tốt', () => {
+  const mk = () => { const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 5, 1, 'P', 'b'); return b; };
+  // Xe Đen ăn Achilles: nước đi hợp lệ nhưng Xe chết theo
+  let b = mk(); let st = exStateBoard(b, { general: { id: 'achilles' } }); st.turn = 'b';
+  assert.ok(E.legalMovesFrom(st, E.idx(2, 0)).some((m) => m.to === E.idx(5, 0)));
+  let u = E.makeMove(st, { from: E.idx(2, 0), to: E.idx(5, 0) });
+  assert.ok(u.died && b[E.idx(5, 0)] === null);
+  E.unmakeMove(st, u); assert.strictEqual(b[E.idx(5, 0)].g, 'achilles');
+  // Tốt Đen (đã qua sông) ăn ngang: Tốt sống
+  b = mk(); st = exStateBoard(b, { general: { id: 'achilles' } }); st.turn = 'b';
+  u = E.makeMove(st, { from: E.idx(5, 1), to: E.idx(5, 0) });
+  assert.ok(!u.died && b[E.idx(5, 0)].t === 'P');
 });
 function exStateBoard(board, rLo, bLo) {
   const st = E.createState({}, {}, board, { r: {}, b: {} });
@@ -295,7 +297,7 @@ t('Phong Toả: quân địch đứng yên 2 lượt, hoàn tác đúng', () => 
   const u2 = E.makeMove(st2, m); E.unmakeMove(st2, u2);
   assert.strictEqual(E.positionKey(st2), key0);
 });
-t('Hồi chiêu: Điều Binh dùng lại sau 3 lượt', () => {
+t('Hồi chiêu: Điều Binh dùng lại sau 2 lượt', () => {
   const st = exState({ strategist: 'ngothinham' }, {});
   const ok = () => E.genSkillMoves(st, 'r', 'dieubinh').length > 0;
   assert.ok(ok());
@@ -307,7 +309,7 @@ t('Hồi chiêu: Điều Binh dùng lại sau 3 lượt', () => {
     waits++;
     E.makeMove(st, E.legalMoves(st).find((x) => !x.skill)); // Đỏ đi thường
   }
-  assert.strictEqual(waits, 3);
+  assert.strictEqual(waits, 2);
 });
 t('Chiêu Binh, Tâm Công, Salamis', () => {
   const mk = () => { const b = kings(empty()); put(b, 6, 0, 'P', 'r'); put(b, 6, 4, 'P', 'b'); put(b, 7, 2, 'P', 'b'); return b; };

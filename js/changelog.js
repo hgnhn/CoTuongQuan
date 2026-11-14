@@ -5,6 +5,21 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.5.1', date: '15/11/2026', title: 'Hoả Công và cân bằng theo cả đội hình',
+      items: [
+        'Hoả Công chỉ còn thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng); 2 ô bên không còn bị lửa lan.',
+        'Giữ nguyên: Pháo chết vì ăn Tử Sĩ thì không phát lửa; miễn nhiễm Pháo và Hộ Thể vẫn chặn lửa.',
+        'Cân bằng lại bản mở rộng theo 800 ván đội hình đầy đủ đấu nhau (Danh Tướng + Quân Sư + perk), thay vì đo từng món riêng lẻ.',
+        'Achilles: Gót Chân đổi cơ chế: quân nào ăn Achilles cũng chết theo, trừ Tốt. Bỏ Phá Trận, thay bằng Chiến Xa.',
+        'Quan Vũ: Thiên Lý Mã + Chiến Mã. Bà Triệu: Cưỡi Voi Xung Trận còn 1 ô.',
+        'Hồ Nguyên Trừng thêm Hoả Công. Lữ Bố: Thiết Giáp + Vô Song. Archimedes giữ Pháo Chéo + Song Ngòi, thêm Cận Chiến.',
+        'Lê Lai: Liều Mình Cứu Chúa dùng được bất cứ lúc nào, thêm Hổ Si (đi 1 ô mọi hướng bên sân nhà). Spartacus: Khởi Nghĩa sau khi qua sông, thêm Linh Hoạt.',
+        'Gia Cát Lượng: Không Thành Kế còn 1 lần, Mượn Gió Đông hồi 5. Tôn Tử: Phong Toả hồi 5, Hộ Thể hồi 3. Ngô Thì Nhậm: Điều Binh hồi 2, Thu Binh hồi 4.',
+        'Hãn Mã: thêm miễn nhiễm Mã địch (Tốt, Pháo và Mã đều không ăn được).',
+        'Trận trực tuyến yêu cầu cả hai bên dùng bản 0.5.1. Nếu thấy luật cũ, bấm Tải bản mới ở nhật ký cập nhật.',
+      ],
+    },
+    {
       v: '0.5.0', date: '14/11/2026', title: 'Thông thạo: Ấn ký chiến công',
       items: [
         'Thêm thông thạo riêng cho 14 Danh Tướng và 6 Quân Sư, gồm 8 cấp huy hiệu phong cách sơn mài.',

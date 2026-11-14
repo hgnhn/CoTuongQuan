@@ -166,12 +166,11 @@
     const T = pset(state, tgt);
     const a = att.t;
     if (T.size) {
-      if (T.has('g_gotchan') && a === 'R') return false;
       if (T.has('g_lansong')) { const r = rowOf(tsq); if (r === 4 || r === 5) return false; }
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
       if (T.has('a_kimcuong') && (a === 'C' || a === 'H' || a === 'P')) return false;
-      if (T.has('h_hanma') && (a === 'P' || a === 'C')) return false;
+      if (T.has('h_hanma') && (a === 'P' || a === 'C' || a === 'H')) return false;
       if (tgt.t === 'P' && T.has('p_lienhoan') && (a === 'R' || a === 'H' || a === 'C') && pawnLinked(state, tsq, tgt.s)) return false;
     }
     if (state.ex) {
@@ -253,12 +252,12 @@
           for (const [dr, dc] of ALL8) { const tr = r + dr, tc = c + dc; addIf(tr, tc, onBoard(tr, tc) && ownHalf(s, tr)); }
         }
         if (P.has('g_thethan') && !capOnly) {
-          // Liều Mình Cứu Chúa: đổi chỗ với Tướng đang bị chiếu đứng sát bên
+          // Liều Mình Cứu Chúa: đổi chỗ với Tướng đứng sát bên
           for (const [dr, dc] of ALL8) {
             const tr = r + dr, tc = c + dc;
             if (!onBoard(tr, tc)) continue;
             const q = B[idx(tr, tc)];
-            if (q && q.t === 'K' && q.s === s && inPalace(s, r, c) && E.inCheck(state, s)) out.push({ from, to: idx(tr, tc), swap: true });
+            if (q && q.t === 'K' && q.s === s && inPalace(s, r, c)) out.push({ from, to: idx(tr, tc), swap: true });
           }
         }
         break;
@@ -277,7 +276,7 @@
           for (const [dr, dc] of DIAG) { const tr = r + dr, tc = c + dc; if (onBoard(tr, tc) && ownHalf(s, tr)) step(tr, tc); }
         }
         if (P.has('g_cuoivoi')) {
-          for (const [dr, dc] of ORTH) slide(dr, dc, 2, crossOk ? null : (tr) => ownHalf(s, tr));
+          for (const [dr, dc] of ORTH) slide(dr, dc, 1, crossOk ? null : (tr) => ownHalf(s, tr));
         }
         if (P.has('g_vuotalps')) {
           for (const [dr, dc] of DIAG) slide(dr, dc, 3, crossOk ? null : (tr) => ownHalf(s, tr));
@@ -382,7 +381,7 @@
         if (crossed || P.has('p_linhhoat')) { add(r, c - 1); add(r, c + 1); }
         if (P.has('p_xungphong') && !crossed && onBoard(r + f, c) && !B[idx(r + f, c)]) add(r + 2 * f, c);
         if (crossed && P.has('g_tamdiep')) add(r - f, c);
-        if (P.has('g_khoinghia')) for (const [dr, dc] of ALL8) add(r + dr, c + dc);
+        if (crossed && P.has('g_khoinghia')) for (const [dr, dc] of ALL8) add(r + dr, c + dc);
         break;
       }
     }
@@ -514,7 +513,9 @@
       if (target) {
         u.captured = target;
         if (state.ex && state.ex.frz[target.s] && state.ex.frz[target.s].sq === m.to) state.ex.frz[target.s] = null;
-        if (pset(state, target).has('a_tusi')) { placed = null; u.died = true; }
+        const TP = pset(state, target);
+        // Tử Sĩ; Gót Chân Achilles (trừ khi kẻ ăn là Tốt): quân ăn chết theo
+        if (TP.has('a_tusi') || (TP.has('g_gotchan') && mover.t !== 'P')) { placed = null; u.died = true; }
       }
       if (placed && placed.t === 'P' && !placed.g && Math.abs(rowOf(m.to) - lastRank(s)) <= 1 && MP.has('p_thangcap')) {
         placed = { t: 'R', s, promo: true };
@@ -526,15 +527,10 @@
         if (placed && mover.t === 'C' && MP.has('c_hoacong')) {
           const dr = Math.sign(rowOf(m.to) - rowOf(m.from)), dc = Math.sign(colOf(m.to) - colOf(m.from));
           const br = rowOf(m.to) + dr, bc = colOf(m.to) + dc;
-          // Ô sau mục tiêu thiêu mọi quân trừ Tướng; hai ô bên chỉ thiêu Tốt/Sĩ/Tượng.
-          // Hai ô bên vuông góc với hướng bắn, kể cả khi có thêm perk Pháo Chéo.
-          for (const [sr, sc] of [[0, 0], [dc, -dr], [-dc, dr]]) {
-            const rr = br + sr, cc = bc + sc;
-            if (!onBoard(rr, cc)) continue;
-            const b = idx(rr, cc), q = B[b];
-            if (!q || q.s === s || q.t === 'K') continue;
-            if ((sr !== 0 || sc !== 0) && q.t !== 'P' && q.t !== 'A' && q.t !== 'E') continue;
-            if (canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
+          // Chỉ thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng).
+          if (onBoard(br, bc)) {
+            const b = idx(br, bc), q = B[b];
+            if (q && q.s !== s && q.t !== 'K' && canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
           }
         }
         // Voi Giày: giẫm chết Tốt địch quanh ô vừa ăn

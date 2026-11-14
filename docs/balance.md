@@ -1,5 +1,59 @@
 # Nhật ký cân bằng perk
 
+## Bản 0.5.1: Hoả Công chỉ thiêu sau lưng, cân bằng theo cả đội hình
+
+### Hoả Công
+Theo yêu cầu thiết kế, Hoả Công chỉ thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng); 2 ô bên không còn bị lửa lan. Giữ các quy tắc của 0.4.1: Pháo chết vì Tử Sĩ thì không phát lửa, miễn nhiễm Pháo và Hộ Thể chặn lửa.
+
+### Phương pháp mới: đo tổng thể đội hình
+Đo từng Danh Tướng/Quân Sư riêng lẻ trước một đối thủ "trắng" (không perk, không Danh Tướng, không Quân Sư) cho kết quả sai lệch. Ví dụ Bát Trận Đồ của Gia Cát Lượng khắc chế Mã của địch, nên khi đối thủ không có perk thì nội tại này vô dụng.
+
+Từ bản này dùng `tests/balance-meta.js`:
+- Mỗi ván, cả hai bên đều có **đội hình đầy đủ**: 1 Danh Tướng + 1 Quân Sư + 7 perk ngẫu nhiên.
+- Bên A lần lượt thử đủ 84 cặp Danh Tướng × Quân Sư; bên B là đội hình ngẫu nhiên.
+- `tests/balance-meta-report.js` khớp mô hình Bradley–Terry: P(thắng) = σ(lợi thế đi trước + Σθ(đội mình) − Σθ(đội địch)). Mô hình ước lượng sức mạnh của từng Danh Tướng, Quân Sư và perk **trong bối cảnh cả đội hình**, đã trừ đi sức mạnh của đối thủ gặp phải. Báo cáo cũng liệt kê các cặp cộng hưởng (điểm thực tế vượt hoặc thấp hơn dự đoán).
+- Mỗi lần đo 800 ván; mỗi Danh Tướng xuất hiện khoảng 110 lần, mỗi Quân Sư khoảng 270 lần. Sai số khoảng ±5%.
+
+Con số là tỉ lệ thắng ước tính khi gặp một đội hình trung bình (50% = cân bằng).
+
+| Danh Tướng | Lần 1 | Lần 2 | Lần 3 | Lần 4 |
+|---|---:|---:|---:|---:|
+| Achilles | 65 | 72 | 57 | 60 |
+| Lữ Bố | 44 | 43 | 65 | 58 |
+| Spartacus | 58 | 42 | 52 | 57 |
+| Lê Lai | 44 | 38 | 49 | 54 |
+| Archimedes | 45 | 38 | 56 | 53 |
+| Hannibal | 55 | 50 | 47 | 50 |
+| Yết Kiêu | 48 | 51 | 47 | 50 |
+| Hứa Chử | 53 | 45 | 45 | 48 |
+| Hồ Nguyên Trừng | 43 | 52 | 46 | 47 |
+| Quan Vũ | 43 | 61 | 47 | 46 |
+| Bà Triệu | 55 | 61 | 45 | 46 |
+| Trần Hưng Đạo | 46 | 48 | 47 | 45 |
+| Richard Tim Sư Tử | 50 | 48 | 51 | 45 |
+| Leonidas | 50 | 52 | 44 | 42 |
+
+| Quân Sư | Lần 1 | Lần 2 | Lần 3 | Lần 4 |
+|---|---:|---:|---:|---:|
+| Gia Cát Lượng | 57 | 52 | 57 | 55 |
+| Themistocles | 50 | 48 | 48 | 53 |
+| Tư Mã Ý | 54 | 54 | 49 | 51 |
+| Ngô Thì Nhậm | 46 | 44 | 48 | 47 |
+| Tôn Tử | 40 | 47 | 42 | 47 |
+| Nguyễn Trãi | 52 | 55 | 55 | 47 |
+
+Perk ở lần 4 (so với perk cùng loại quân): 26/28 nằm trong 46–55%. Thấp nhất là Liên Hoàn (43–48% qua 4 lần) và Hoả Công (44–48%); cao nhất là Linh Hoạt (53–56%).
+
+### Thay đổi giữa các lần đo
+- **Sau lần 1**: Achilles bỏ Phá Trận; Spartacus: Khởi Nghĩa chỉ sau khi qua sông; Gia Cát Lượng: Không Thành Kế còn 1 lần. Buff Hồ Nguyên Trừng (+Hoả Công), Quan Vũ (+Chiến Mã), Lữ Bố (+Phá Trận), Lê Lai (thế thân lúc nào cũng được), Tôn Tử, Ngô Thì Nhậm.
+- **Sau lần 2**: Achilles đổi cơ chế Gót Chân: quân nào ăn cũng chết theo, trừ Tốt (trước đó là miễn nhiễm Xe nên không thể đổi Xe). Quan Vũ: Thiên Lý Mã + Chiến Mã. Bà Triệu: Cưỡi Voi còn 1 ô. Lữ Bố thêm Vô Song. Archimedes giữ Pháo Chéo + Song Ngòi, thêm Cận Chiến. Lê Lai thêm Hổ Si. Spartacus thêm Linh Hoạt. Ngô Thì Nhậm: Thu Binh hồi 4.
+- **Sau lần 3**: Lữ Bố bỏ Phá Trận (Vô Song quá mạnh khi đi cùng). Tôn Tử: Phong Toả hồi 5, Hộ Thể hồi 3. Gia Cát Lượng: Mượn Gió Đông hồi 5. Hãn Mã thêm miễn nhiễm Mã.
+
+### Giới hạn
+- AI tự đấu ở 40 ms/nước chơi nông hơn người. Các chiêu cần tính xa và các nội tại khắc chế có thể bị đánh giá chưa đúng.
+- Các cặp cộng hưởng mỗi cặp chỉ có 11–22 ván, nên chênh lệch ±20% vẫn nằm trong nhiễu. Chưa chỉnh theo phần này; cần thêm dữ liệu từ ván người chơi thật.
+
+
 ## Bản 0.4.1: cân bằng Hoả Công và Archimedes
 
 - Giữ Hoả Công làm perk thường của Pháo và giảm sức mạnh sát thương lan.

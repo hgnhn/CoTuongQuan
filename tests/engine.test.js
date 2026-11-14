@@ -135,7 +135,8 @@ t('Hoả Công: hai ô bên chỉ thiêu Tốt/Sĩ/Tượng, đủ 8 hướng v�
       const st = E.createState(perks, perks, b, { r: {}, b: {} });
       st.turn = side;
       if (dr && dc) {
-        b[E.idx(4, 4)].g = 'archimedes'; st.ex.gen[side] = 'archimedes'; delete st.sets;
+        // Kiểm tra hình học Hoả Công độc lập với bộ perk hiện tại của Danh Tướng.
+        E.pieceSet(st, b[E.idx(4, 4)]).add('c_phaocheo');
       }
       const move = { from: E.idx(4, 4), to: E.idx(4 + 2 * dr, 4 + 2 * dc) };
       assert.ok(E.genPieceMoves(st, move.from).some((m) => m.to === move.to));
@@ -219,6 +220,35 @@ t('Danh Tướng thay đúng 1 quân, mang perk riêng', () => {
   assert.strictEqual(st.board[CTQ.slotSquares('H', 'r')[0]].g, undefined);
   // Thiên Lý Mã: Mã không bị Tượng cản chân
   assert.ok(E.legalMovesFrom(st, sq).some((m) => m.to === E.idx(8, 5)));
+});
+t('Archimedes: Pháo Chéo + Song Ngòi ăn qua 2 ngòi, không còn Hoả Công', () => {
+  const b = kings(empty()); put(b, 7, 1, 'C', 'r'); put(b, 7, 7, 'C', 'r');
+  put(b, 6, 2, 'P', 'r'); put(b, 5, 3, 'E', 'b'); put(b, 4, 4, 'H', 'b');
+  put(b, 3, 5, 'R', 'b'); put(b, 2, 4, 'P', 'b'); put(b, 4, 6, 'P', 'b');
+  const st = E.createState({ C: 'c_hoacong' }, {}, b, { r: { general: { id: 'archimedes', slot: 0 } }, b: {} });
+  const perks = E.pieceSet(st, b[E.idx(7, 1)]);
+  assert.ok(perks.has('c_phaocheo') && perks.has('c_songngoi')); assert.ok(!perks.has('c_hoacong'));
+  assert.ok(E.pieceSet(st, b[E.idx(7, 7)]).has('c_hoacong')); // Pháo thường giữ perk đã chọn
+  const moves = E.legalMovesFrom(st, E.idx(7, 1));
+  assert.ok(moves.some((m) => m.to === E.idx(5, 3))); // 1 ngòi
+  const move = moves.find((m) => m.to === E.idx(4, 4)); assert.ok(move); // 2 ngòi, tầm chéo 3
+  const before = b.slice(), key = E.positionKey(st), u = E.makeMove(st, move);
+  assert.strictEqual(u.extra.length, 0);
+  for (const [r, c] of [[3, 5], [2, 4], [4, 6]]) assert.strictEqual(b[E.idx(r, c)], before[E.idx(r, c)]);
+  E.unmakeMove(st, u); assert.deepStrictEqual(st.board, before); assert.strictEqual(E.positionKey(st), key);
+});
+t('Archimedes: giữ giới hạn tầm chéo và chiếu Tướng khi kết hợp Song Ngòi', () => {
+  const b = empty(); put(b, 9, 3, 'K', 'r'); put(b, 0, 4, 'K', 'b');
+  put(b, 3, 1, 'C', 'r'); b[E.idx(3, 1)].g = 'archimedes';
+  put(b, 2, 2, 'P', 'r'); put(b, 1, 3, 'P', 'r');
+  const st = exStateBoard(b, { general: { id: 'archimedes' } });
+  assert.ok(!E.inCheck(st, 'b')); b[E.idx(1, 3)] = null; assert.ok(!E.inCheck(st, 'b'));
+  put(b, 3, 1, 'C', 'r'); b[E.idx(3, 1)].g = 'archimedes';
+  put(b, 4, 2, 'P', 'r'); put(b, 5, 3, 'P', 'r'); put(b, 7, 5, 'H', 'b');
+  assert.ok(!E.genPieceMoves(st, E.idx(3, 1)).some((m) => m.to === E.idx(7, 5))); // tầm chéo 4
+  b[E.idx(3, 1)] = null; put(b, 9, 4, 'C', 'r'); b[E.idx(9, 4)].g = 'archimedes';
+  put(b, 7, 4, 'P', 'r'); put(b, 5, 4, 'P', 'r');
+  assert.ok(!E.inCheck(st, 'b')); b[E.idx(5, 4)] = null; assert.ok(E.inCheck(st, 'b'));
 });
 t('Achilles: Xe không ăn được, Tốt thì được', () => {
   const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 4, 0, 'P', 'b');

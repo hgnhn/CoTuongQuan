@@ -10,7 +10,7 @@
   const QUIET_LIMIT = 120; // 60 nước mỗi bên không ăn quân thì hoà
   const SETUP_TIME = { normal: 60, ex: 90 }; // giây chuẩn bị
   const COUNTDOWN = 3;
-  const PROTO = 3; // phiên bản giao thức/luật trực tuyến (Hoả Công 0.4.1)
+  const PROTO = 3; // phiên bản giao thức/luật trực tuyến (cân bằng 0.4.1)
 
   // ---------------- Lưu trữ ----------------
   const store = {

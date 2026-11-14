@@ -69,7 +69,7 @@
       portrait: { region: 'vn', hat: 'mu-quan', beard: 'goatee', robe: '#2b3f5c' } },
     { id: 'archimedes', name: 'Archimedes', short: 'Archimedes', type: 'C', era: 'Syracuse, Hy Lạp',
       bio: 'Chế tạo máy bắn đá và gương đốt bảo vệ thành Syracuse.',
-      perks: ['c_phaocheo', 'c_hoacong'],
+      perks: ['c_phaocheo', 'c_songngoi'],
       portrait: { region: 'gr', hat: 'none', beard: 'full', robe: '#e8dcc0', hair: 'curly' } },
 
     { id: 'quanvu', name: 'Quan Vũ', short: 'Quan Vũ', type: 'H', era: 'Tam Quốc',

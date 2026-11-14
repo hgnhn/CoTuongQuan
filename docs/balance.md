@@ -1,14 +1,16 @@
 # Nhật ký cân bằng perk
 
-## Bản 0.4.1: giảm sức mạnh Hoả Công
+## Bản 0.4.1: cân bằng Hoả Công và Archimedes
 
-- Giữ perk Hoả Công thay vì thay perk mới, áp dụng cho cả Pháo thường và Archimedes.
+- Giữ Hoả Công làm perk thường của Pháo và giảm sức mạnh sát thương lan.
+- Archimedes đổi từ Pháo Chéo + Hoả Công sang **Pháo Chéo + Song Ngòi**, không còn gây sát thương lan. Pháo thường còn lại vẫn dùng perk Pháo đã chọn.
+- Archimedes được ăn qua 1 hoặc 2 ngòi theo hàng ngang/dọc và đường chéo (tầm chéo tối đa 3 ô). Không chiếu Tướng theo đường chéo hoặc qua 2 ngòi; vẫn chiếu được theo hàng ngang/dọc qua đúng 1 ngòi.
 - Ô ngay sau mục tiêu vẫn thiêu mọi quân địch trừ Tướng; hai ô bên chỉ thiêu Tốt, Sĩ, Tượng, không còn thiêu Xe/Mã/Pháo.
 - Pháo phải sống sau đòn ăn mới phát lửa: ăn Sĩ có Tử Sĩ thì Pháo chết và không gây sát thương lan.
-- Sửa vị trí hai ô bên thành vuông góc với hướng bắn, kể cả đường chéo của Archimedes.
+- Sửa vị trí hai ô lan của Hoả Công thành vuông góc với hướng bắn cho mọi hướng.
 - Miễn nhiễm Pháo và Hộ Thể vẫn chặn sát thương lan; lửa không thiêu quân mình hay Tướng. Chiêu Mượn Gió Đông của Gia Cát Lượng không thay đổi.
 - Mục tiêu: giữ khả năng trừng phạt đội hình tụ quân, giảm những đòn ăn lan nhiều quân chủ lực trong một lượt và cho Tử Sĩ khả năng chặn đòn nổ.
-- Kiểm chứng bằng các thế cờ kiểm thử cho hướng bắn, loại quân, miễn nhiễm, Tử Sĩ và hoàn tác. Chưa có số liệu tự đấu mới; điểm Hoả Công 0.60 và Archimedes 0.71 phía dưới là của bản 0.4.0, không đại diện cho luật mới.
+- Kiểm chứng bằng các thế cờ kiểm thử cho hướng bắn, loại quân, miễn nhiễm, Tử Sĩ, hoàn tác và bộ perk mới của Archimedes. Chưa có số liệu tự đấu mới; điểm Hoả Công 0.60 và Archimedes 0.71 phía dưới là của bản 0.4.0, không đại diện cho luật mới.
 
 ## Phương pháp
 

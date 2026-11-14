@@ -527,7 +527,7 @@
           const dr = Math.sign(rowOf(m.to) - rowOf(m.from)), dc = Math.sign(colOf(m.to) - colOf(m.from));
           const br = rowOf(m.to) + dr, bc = colOf(m.to) + dc;
           // Ô sau mục tiêu thiêu mọi quân trừ Tướng; hai ô bên chỉ thiêu Tốt/Sĩ/Tượng.
-          // Hai ô bên vuông góc với hướng bắn, kể cả khi Archimedes bắn chéo.
+          // Hai ô bên vuông góc với hướng bắn, kể cả khi có thêm perk Pháo Chéo.
           for (const [sr, sc] of [[0, 0], [dc, -dr], [-dc, dr]]) {
             const rr = br + sr, cc = bc + sc;
             if (!onBoard(rr, cc)) continue;

@@ -246,12 +246,18 @@ t('Archimedes: giữ giới hạn tầm chéo và chiếu Tướng khi kết h�
   put(b, 7, 4, 'P', 'r'); put(b, 5, 4, 'P', 'r');
   assert.ok(!E.inCheck(st, 'b')); b[E.idx(5, 4)] = null; assert.ok(E.inCheck(st, 'b'));
 });
-t('Achilles: Xe không ăn được, Tốt thì được', () => {
-  const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 4, 0, 'P', 'b');
-  const st = exStateBoard(b, { general: { id: 'achilles' } });
-  assert.ok(!tos(st, 2, 0).includes('5,0'));
-  st.turn = 'b';
-  assert.ok(E.legalMovesFrom(st, E.idx(4, 0)).some((m) => m.to === E.idx(5, 0)));
+t('Achilles: quân ăn chết theo, trừ Tốt', () => {
+  const mk = () => { const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 5, 1, 'P', 'b'); return b; };
+  // Xe Đen ăn Achilles: nước đi hợp lệ nhưng Xe chết theo
+  let b = mk(); let st = exStateBoard(b, { general: { id: 'achilles' } }); st.turn = 'b';
+  assert.ok(E.legalMovesFrom(st, E.idx(2, 0)).some((m) => m.to === E.idx(5, 0)));
+  let u = E.makeMove(st, { from: E.idx(2, 0), to: E.idx(5, 0) });
+  assert.ok(u.died && b[E.idx(5, 0)] === null);
+  E.unmakeMove(st, u); assert.strictEqual(b[E.idx(5, 0)].g, 'achilles');
+  // Tốt Đen (đã qua sông) ăn ngang: Tốt sống
+  b = mk(); st = exStateBoard(b, { general: { id: 'achilles' } }); st.turn = 'b';
+  u = E.makeMove(st, { from: E.idx(5, 1), to: E.idx(5, 0) });
+  assert.ok(!u.died && b[E.idx(5, 0)].t === 'P');
 });
 function exStateBoard(board, rLo, bLo) {
   const st = E.createState({}, {}, board, { r: {}, b: {} });

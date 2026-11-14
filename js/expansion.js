@@ -11,13 +11,13 @@
   // Perk riêng của Danh Tướng (perk thường dùng lại id trong data.js)
   CTQ.GPERKS = {
     g_xuatcung: { name: 'Xuất Cung Thân Chinh', desc: 'Đi 1 ô ngang/dọc/chéo trong cung và được bước ra thêm 1 hàng phía trước cung.' },
-    g_cuoivoi: { name: 'Cưỡi Voi Xung Trận', desc: 'Được đi thẳng 1–2 ô theo hàng ngang/dọc (bị chặn bởi quân trên đường), ăn được quân đầu tiên gặp.' },
+    g_cuoivoi: { name: 'Cưỡi Voi Xung Trận', desc: 'Được đi và ăn thêm 1 ô thẳng theo hàng ngang/dọc.' },
     g_thuai: { name: 'Thủ Ải Thermopylae', desc: 'Pháo địch không thể chiếu hay ăn quân này.' },
     g_thethan: { name: 'Liều Mình Cứu Chúa', desc: 'Đổi chỗ với Tướng mình đứng sát bên (cả chéo) bất cứ lúc nào, miễn Tướng vẫn ở trong cung.' },
     g_hosi: { name: 'Hổ Si', desc: 'Đi 1 ô theo mọi hướng, được ra khỏi cung nhưng phải ở sân nhà.' },
     g_vuotalps: { name: 'Vượt Alps', desc: 'Lướt chéo tối đa 3 ô (bị chặn bởi quân trên đường), ăn được quân đầu tiên gặp.' },
     g_vosong: { name: 'Vô Song', desc: 'Đi và ăn thêm 1 ô chéo theo mọi hướng.' },
-    g_gotchan: { name: 'Gót Chân Achilles', desc: 'Xe không ăn được quân này.' },
+    g_gotchan: { name: 'Gót Chân Achilles', desc: 'Quân nào ăn Achilles cũng chết theo, trừ Tốt: chỉ Tốt đánh vào gót chân mới hạ được mà không mất gì. Tướng địch vì vậy không thể ăn Achilles.' },
     g_thapchu: { name: 'Thập Tự Kỵ', desc: 'Đi và ăn thêm 1 ô chéo theo mọi hướng.' },
     g_lansong: { name: 'Lặn Sông', desc: 'Đứng ở 2 hàng sát sông thì không quân nào ăn được.' },
     g_khoinghia: { name: 'Khởi Nghĩa', desc: 'Sau khi qua sông, đi và ăn 1 ô theo mọi hướng (ngang, dọc, chéo, kể cả lùi).' },
@@ -38,7 +38,7 @@
 
     { id: 'lelai', name: 'Lê Lai', short: 'Lê Lai', type: 'A', era: 'Đại Việt, thế kỷ 15',
       bio: 'Mặc áo bào thay Lê Lợi, hy sinh để cứu chủ tướng.',
-      perks: ['g_thethan', 'a_tusi', 'a_canve'],
+      perks: ['g_thethan', 'a_tusi', 'g_hosi'],
       portrait: { region: 'vn', hat: 'khan', beard: 'short', robe: '#5a3a20' } },
     { id: 'hachu', name: 'Hứa Chử', short: 'Hứa Chử', type: 'A', era: 'Tam Quốc',
       bio: 'Hổ Si, cận vệ trung thành của Tào Tháo.',
@@ -56,7 +56,7 @@
 
     { id: 'lubo', name: 'Lữ Bố', short: 'Lữ Bố', type: 'R', era: 'Tam Quốc',
       bio: 'Đệ nhất mãnh tướng với Phương Thiên Hoạ Kích.',
-      perks: ['r_thietgiap', 'r_chienxa', 'r_phatran'],
+      perks: ['r_thietgiap', 'g_vosong', 'r_phatran'],
       portrait: { region: 'tq', hat: 'pheasant', beard: 'none', robe: '#7a1a1a' } },
     { id: 'achilles', name: 'Achilles', short: 'Achilles', type: 'R', era: 'Hy Lạp, thành Troy',
       bio: 'Chiến binh bất khả xâm phạm, chỉ có gót chân là điểm yếu.',
@@ -69,12 +69,12 @@
       portrait: { region: 'vn', hat: 'mu-quan', beard: 'goatee', robe: '#2b3f5c' } },
     { id: 'archimedes', name: 'Archimedes', short: 'Archimedes', type: 'C', era: 'Syracuse, Hy Lạp',
       bio: 'Chế tạo máy bắn đá và gương đốt bảo vệ thành Syracuse.',
-      perks: ['c_phaocheo', 'c_songngoi'],
+      perks: ['c_phaocheo', 'c_songngoi', 'c_canchien'],
       portrait: { region: 'gr', hat: 'none', beard: 'full', robe: '#e8dcc0', hair: 'curly' } },
 
     { id: 'quanvu', name: 'Quan Vũ', short: 'Quan Vũ', type: 'H', era: 'Tam Quốc',
       bio: 'Cưỡi Xích Thố, cầm Thanh Long Yển Nguyệt Đao.',
-      perks: ['h_thienly', 'h_hanma', 'h_chienma'],
+      perks: ['h_thienly', 'h_chienma'],
       portrait: { region: 'tq', hat: 'khan-xanh', beard: 'long', robe: '#2f6b3a', face: '#b8432f' } },
     { id: 'richard', name: 'Richard Tim Sư Tử', short: 'Richard', type: 'H', era: 'Anh, Trung Cổ',
       bio: 'Vua hiệp sĩ dẫn đầu cuộc Thập Tự Chinh thứ ba.',
@@ -87,7 +87,7 @@
       portrait: { region: 'vn', hat: 'khan', beard: 'none', robe: '#24485c' } },
     { id: 'spartacus', name: 'Spartacus', short: 'Spartacus', type: 'P', era: 'La Mã cổ đại',
       bio: 'Đấu sĩ nô lệ lãnh đạo cuộc khởi nghĩa lớn nhất chống La Mã.',
-      perks: ['g_khoinghia', 'p_xungphong'],
+      perks: ['g_khoinghia', 'p_xungphong', 'p_linhhoat'],
       portrait: { region: 'med', hat: 'none', beard: 'stubble', robe: '#6b4a2a', hair: 'short' } },
   ];
 
@@ -120,7 +120,7 @@
       portrait: { region: 'vn', hat: 'mu-quan', beard: 'long', robe: '#24485c' } },
     { id: 'ngothinham', name: 'Ngô Thì Nhậm', era: 'Tây Sơn, thế kỷ 18', bio: 'Hiến kế lui về Tam Điệp trước khi đại phá quân Thanh.',
       passive: { name: 'Lui Về Tam Điệp', desc: 'Tốt của bạn được tiến 2 ô khi chưa qua sông (Xung Phong) và được lùi 1 ô sau khi qua sông.', grants: { P: ['g_tamdiep', 'p_xungphong'] } },
-      actives: [{ skill: 'dieubinh', cd: 2 }, { skill: 'thubinh', cd: 6 }],
+      actives: [{ skill: 'dieubinh', cd: 2 }, { skill: 'thubinh', cd: 4 }],
       portrait: { region: 'vn', hat: 'khan', beard: 'goatee', robe: '#5a3a20' } },
     { id: 'tontu', name: 'Tôn Tử', era: 'Xuân Thu', bio: 'Tác giả Binh pháp Tôn Tử.',
       passive: { name: 'Binh Quý Thần Tốc', desc: 'Mọi chiêu có hồi chiêu của bạn hồi nhanh hơn 1 lượt.', flag: 'thantoc' },

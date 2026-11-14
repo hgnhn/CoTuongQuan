@@ -166,7 +166,6 @@
     const T = pset(state, tgt);
     const a = att.t;
     if (T.size) {
-      if (T.has('g_gotchan') && a === 'R') return false;
       if (T.has('g_lansong')) { const r = rowOf(tsq); if (r === 4 || r === 5) return false; }
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
@@ -277,7 +276,7 @@
           for (const [dr, dc] of DIAG) { const tr = r + dr, tc = c + dc; if (onBoard(tr, tc) && ownHalf(s, tr)) step(tr, tc); }
         }
         if (P.has('g_cuoivoi')) {
-          for (const [dr, dc] of ORTH) slide(dr, dc, 2, crossOk ? null : (tr) => ownHalf(s, tr));
+          for (const [dr, dc] of ORTH) slide(dr, dc, 1, crossOk ? null : (tr) => ownHalf(s, tr));
         }
         if (P.has('g_vuotalps')) {
           for (const [dr, dc] of DIAG) slide(dr, dc, 3, crossOk ? null : (tr) => ownHalf(s, tr));
@@ -514,7 +513,9 @@
       if (target) {
         u.captured = target;
         if (state.ex && state.ex.frz[target.s] && state.ex.frz[target.s].sq === m.to) state.ex.frz[target.s] = null;
-        if (pset(state, target).has('a_tusi')) { placed = null; u.died = true; }
+        const TP = pset(state, target);
+        // Tử Sĩ; Gót Chân Achilles (trừ khi kẻ ăn là Tốt): quân ăn chết theo
+        if (TP.has('a_tusi') || (TP.has('g_gotchan') && mover.t !== 'P')) { placed = null; u.died = true; }
       }
       if (placed && placed.t === 'P' && !placed.g && Math.abs(rowOf(m.to) - lastRank(s)) <= 1 && MP.has('p_thangcap')) {
         placed = { t: 'R', s, promo: true };

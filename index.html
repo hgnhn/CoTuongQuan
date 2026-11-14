@@ -21,9 +21,15 @@
       <div class="account" id="account"></div>
       <div class="invite-banner" id="invite-banner" hidden></div>
       <header class="menu-head">
+        <div class="seg lobby-switch" role="tablist" aria-label="Chọn sảnh">
+          <button type="button" role="tab" class="seg-btn" data-lobby="normal">Sảnh thường</button>
+          <button type="button" role="tab" class="seg-btn" data-lobby="ex">Bản mở rộng</button>
+        </div>
         <h1 id="game-title" class="title">Cờ Tướng Quân</h1>
-        <p class="tagline">Cờ tướng, nhưng mỗi loại quân mang một tuyệt kỹ do bạn chọn.</p>
+        <p class="tagline" id="tagline">Cờ tướng, nhưng mỗi loại quân mang một tuyệt kỹ do bạn chọn.</p>
       </header>
+
+      <aside class="changelog" id="changelog" aria-label="Nhật ký cập nhật"></aside>
 
       <nav class="menu-list" aria-label="Menu chính">
         <button class="menu-item" data-action="online">
@@ -53,6 +59,7 @@
           <h2>Đội hình của bạn</h2>
           <button class="link-btn" data-action="army">Chỉnh sửa</button>
         </div>
+        <div id="menu-ex-summary"></div>
         <ul id="menu-perk-list" class="perk-summary"></ul>
       </section>
     </div>
@@ -89,36 +96,27 @@
         <button role="tab" class="seg-btn" data-army-slot="p2" aria-selected="false">Người chơi 2</button>
       </div>
     </header>
-    <div class="army-layout">
-      <section class="army-board-wrap">
-        <p class="hint">Chạm vào một quân trên bàn để chọn perk cho cả loại quân đó. Đội hình được khoá khi trận bắt đầu, nên hãy chọn xong ở đây.</p>
-        <div id="army-board" class="board"></div>
-        <div class="army-tools">
-          <button class="ghost-btn" id="army-random">Ngẫu nhiên</button>
-          <button class="ghost-btn" id="army-reset">Về mặc định</button>
-        </div>
-      </section>
-      <section class="perk-panel" aria-live="polite">
-        <div class="type-strip" id="type-strip" role="tablist" aria-label="Loại quân"></div>
-        <div class="perk-head">
-          <span class="perk-head-glyph" id="perk-head-glyph"></span>
-          <div>
-            <h2 id="perk-head-name"></h2>
-            <p id="perk-head-base" class="muted"></p>
-          </div>
-        </div>
-        <div id="perk-options" class="perk-options" role="radiogroup"></div>
-        <div class="demo">
-          <div id="demo-board" class="board board-mini"></div>
-          <div class="demo-legend">
-            <p><span class="dot dot-base"></span> Nước đi gốc</p>
-            <p><span class="dot dot-perk"></span> Nước đi perk mở thêm</p>
-            <p><span class="dot dot-lost"></span> Nước đi perk chặn lại</p>
-            <p id="demo-note" class="muted"></p>
-          </div>
-        </div>
-      </section>
+    <p class="army-lead" id="army-lead"></p>
+    <div id="army-editor" class="army-layout"></div>
+  </main>
+
+  <!-- ============ PHÒNG CHUẨN BỊ ============ -->
+  <main id="screen-setup" class="screen" aria-labelledby="setup-title">
+    <header class="bar setup-bar">
+      <button class="ghost-btn" id="setup-leave">Rời phòng</button>
+      <div class="setup-head">
+        <h1 id="setup-title" class="bar-title">Phòng chuẩn bị</h1>
+        <p class="muted" id="setup-sub"></p>
+      </div>
+      <div class="setup-timer" id="setup-timer" role="timer" aria-label="Thời gian chuẩn bị còn lại">1:00</div>
+    </header>
+    <div class="setup-status" id="setup-status"></div>
+    <div id="setup-editor" class="army-layout"></div>
+    <div class="setup-foot">
+      <p class="muted" id="setup-foot-note"></p>
+      <button class="primary-btn big" id="setup-ready">Sẵn sàng</button>
     </div>
+    <div class="countdown" id="countdown" hidden><span id="countdown-num">3</span><p>Vào trận</p></div>
   </main>
 
   <!-- ============ TRẬN ĐẤU ============ -->
@@ -152,9 +150,10 @@
       <span></span>
     </header>
     <article class="rules">
-      <p>Luật cờ tướng chuẩn được giữ nguyên: chiếu bí hoặc vây cho đối thủ hết nước đi là thắng, hai Tướng không được đối mặt trên cột trống. Trước trận, mỗi người chọn đúng một perk cho mỗi loại quân. Perk áp dụng cho tất cả quân cùng loại, và cả hai bên đều nhìn thấy perk của nhau.</p>
+      <p>Luật cờ tướng chuẩn được giữ nguyên: chiếu bí hoặc vây cho đối thủ hết nước đi là thắng, hai Tướng không được đối mặt trên cột trống. Mỗi người chọn đúng một perk cho mỗi loại quân, ở sảnh hoặc trong phòng chuẩn bị trước trận (có giờ đếm ngược; cả hai bấm Sẵn sàng thì vào trận). Perk áp dụng cho tất cả quân cùng loại. Đội hình đối thủ được giữ kín trong phòng chuẩn bị và lộ ra khi trận bắt đầu; từ lúc đó không đổi được nữa.</p>
       <p>Lặp lại cùng một thế cờ ba lần thì hoà, trừ khi một bên liên tục chiếu trong suốt vòng lặp: bên chiếu dai bị xử thua. Sau 60 nước mỗi bên không có quân nào bị ăn, ván cờ hoà.</p>
       <div id="rules-list"></div>
+      <div id="rules-ex"></div>
     </article>
   </main>
 
@@ -165,11 +164,15 @@
 
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/expansion.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/ai.js"></script>
+  <script src="js/portraits.js"></script>
+  <script src="js/changelog.js"></script>
   <script src="js/board-view.js"></script>
   <script src="js/net.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/editor.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

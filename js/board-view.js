@@ -104,8 +104,16 @@
           el = document.createElement('button');
           el.type = 'button';
           el.className = 'piece';
-          el.innerHTML = '<span class="glyph"></span>';
           el.dataset.key = key;
+        }
+        // mặt quân: chữ Hán, hoặc chân dung nếu là Danh Tướng
+        const face = p.g ? 'g:' + p.g + p.s : 'n:' + p.t + p.s;
+        if (el.dataset.face !== face) {
+          el.dataset.face = face;
+          const glyph = CTQ.PIECES[p.t].glyph[p.s];
+          el.innerHTML = p.g
+            ? `<span class="pf">${CTQ.portraitHTML(CTQ.generalById(p.g), { ring: false })}</span><span class="glyph-badge">${glyph}</span>`
+            : `<span class="glyph">${glyph}</span>`;
         }
         used.add(key);
         el.dataset.sq = i;
@@ -114,14 +122,16 @@
           (d.check === i ? ' is-check' : '') +
           (d.dim && d.dim.has(i) ? ' is-dim' : '') +
           (d.focus === i ? ' is-focus' : '') +
+          (d.frozen && d.frozen.has(i) ? ' is-frozen' : '') +
+          (d.shield && d.shield.has(i) ? ' is-shield' : '') +
+          (p.g ? ' is-general' : '') +
           (p.promo ? ' is-promo' : '');
         const perkId = state.perks && state.perks[p.s] ? state.perks[p.s][p.t] : '';
-        const perk = perkId ? CTQ.perkById(perkId) : null;
-        el.dataset.perk = perk && d.showPerk !== false ? '1' : '';
-        el.querySelector('.glyph').textContent = CTQ.PIECES[p.t].glyph[p.s];
+        const perk = !p.g && perkId ? CTQ.perkById(perkId) : null;
         const sideName = p.s === 'r' ? 'Đỏ' : 'Đen';
-        el.setAttribute('aria-label', `${CTQ.PIECES[p.t].name} ${sideName}${p.promo ? ' (phong cấp)' : ''}${perk ? ', perk ' + perk.name : ''}`);
-        el.title = `${CTQ.PIECES[p.t].name}${perk ? ' · ' + perk.name : ''}`;
+        const pname = p.g ? CTQ.generalById(p.g).name + ' (' + CTQ.PIECES[p.t].name + ')' : CTQ.PIECES[p.t].name;
+        el.setAttribute('aria-label', `${pname} ${sideName}${p.promo ? ' (phong cấp)' : ''}${perk ? ', perk ' + perk.name : ''}`);
+        el.title = `${pname}${perk ? ' · ' + perk.name : ''}`;
         el.tabIndex = this.opts.interactive ? 0 : -1;
         const ps = this.pos(i);
         el.style.left = ps.left; el.style.top = ps.top;

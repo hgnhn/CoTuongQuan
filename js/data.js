@@ -51,6 +51,8 @@
         desc: 'Tượng được qua sông. Khi đứng bên sân địch, Tượng không bị cản mắt.' },
       { id: 'e_voichien', name: 'Voi Chiến',
         desc: 'Tượng không còn bị cản mắt.' },
+      { id: 'e_voigiay', name: 'Voi Giày',
+        desc: 'Khi Tượng ăn quân, mọi Tốt, Sĩ, Tượng địch đứng sát ô đó (cả chéo) bị giẫm chết theo.' },
       { id: 'e_tieubo', name: 'Tiểu Bộ',
         desc: 'Tượng được đi thêm chéo 1 ô tới ô trống bên phần sân nhà.' },
     ],
@@ -59,6 +61,8 @@
         desc: 'Xe miễn nhiễm với đòn ăn của Pháo.' },
       { id: 'r_chienxa', name: 'Chiến Xa',
         desc: 'Xe được đi thêm 1 ô chéo tới ô trống (không ăn quân theo đường chéo).' },
+      { id: 'r_phatran', name: 'Phá Trận',
+        desc: 'Xe được đi xuyên qua đúng 1 quân mình để tới ô trống phía sau (không ăn quân theo cách này).' },
       { id: 'r_phaoxa', name: 'Pháo Xa',
         desc: 'Theo hàng dọc, Xe được ăn quân kiểu Pháo nếu ngòi là quân mình.' },
     ],
@@ -67,6 +71,8 @@
         desc: 'Pháo được ăn quân khi nhảy qua 1 hoặc 2 ngòi (qua 2 ngòi thì không chiếu được Tướng).' },
       { id: 'c_canchien', name: 'Cận Chiến',
         desc: 'Pháo được ăn thẳng quân địch đứng sát bên (ngang/dọc), không cần ngòi. Không áp dụng với Tướng.' },
+      { id: 'c_hoacong', name: 'Hoả Công',
+        desc: 'Khi Pháo ăn quân, lửa lan ra ô ngay sau mục tiêu theo hướng bắn và 2 ô hai bên ô đó: quân địch ở đó bị thiêu (trừ Tướng).' },
       { id: 'c_phaocheo', name: 'Pháo Chéo',
         desc: 'Pháo được đi và ăn theo đường chéo (tầm tối đa 3 ô), theo đúng cách của Pháo. Đường chéo không dùng để chiếu Tướng.' },
     ],
@@ -75,6 +81,8 @@
         desc: 'Mã không còn bị cản chân.' },
       { id: 'h_chienma', name: 'Chiến Mã',
         desc: 'Mã được đi thêm 1 ô thẳng. Tiến thẳng được ăn quân, các hướng khác chỉ tới ô trống.' },
+      { id: 'h_hanma', name: 'Hãn Mã',
+        desc: 'Tốt và Pháo không ăn được Mã.' },
       { id: 'h_otruy', name: 'Ô Truy',
         desc: 'Mã được nhảy dài theo chiều dọc: 3 ô dọc rồi 1 ô ngang, bị cản nếu 2 ô dọc đầu tiên có quân.' },
     ],
@@ -95,6 +103,7 @@
       const p = CTQ.PERKS[t].find((x) => x.id === id);
       if (p) return p;
     }
+    if (CTQ.GPERKS && CTQ.GPERKS[id]) return Object.assign({ id }, CTQ.GPERKS[id]);
     return null;
   };
 

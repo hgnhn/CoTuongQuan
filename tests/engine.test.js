@@ -1,5 +1,5 @@
 // Chạy: node tests/engine.test.js
-require('../js/data.js'); require('../js/engine.js'); require('../js/ai.js');
+require('../js/config.js'); require('../js/data.js'); require('../js/expansion.js'); require('../js/engine.js'); require('../js/ai.js');
 const CTQ = globalThis.CTQ, E = CTQ.Engine;
 const assert = require('assert');
 const NONE = { K: '', A: '', E: '', R: '', C: '', H: '', P: '' };
@@ -103,6 +103,135 @@ t('Song Ngòi không chiếu qua 2 ngòi', () => {
   const st = raw({ C: 'c_songngoi' }, {}, b); st.turn = 'b';
   assert.ok(!E.inCheck(st, 'b'));
 });
+
+// ---------------- Perk mới & Bản mở rộng ----------------
+t('Voi Giày: Tượng ăn quân giẫm chết Tốt quanh đó', () => {
+  const b = kings(empty()); put(b, 7, 4, 'E', 'r'); put(b, 5, 2, 'H', 'b'); put(b, 5, 1, 'P', 'b'); put(b, 4, 3, 'P', 'b'); put(b, 5, 3, 'R', 'b');
+  const st = raw({ E: 'e_voigiay' }, {}, b);
+  const u = E.makeMove(st, { from: E.idx(7, 4), to: E.idx(5, 2) });
+  assert.strictEqual(u.extra.length, 2); // 2 Tốt, không giẫm Xe
+  assert.ok(st.board[E.idx(5, 3)]);
+  E.unmakeMove(st, u);
+  assert.ok(st.board[E.idx(5, 1)] && st.board[E.idx(4, 3)] && st.board[E.idx(7, 4)]);
+});
+t('Hoả Công: bắn xuyên quân phía sau mục tiêu', () => {
+  const b = kings(empty()); put(b, 9, 0, 'C', 'r'); put(b, 7, 0, 'P', 'r'); put(b, 4, 0, 'H', 'b'); put(b, 3, 0, 'R', 'b');
+  const st = raw({ C: 'c_hoacong' }, {}, b);
+  const u = E.makeMove(st, { from: E.idx(9, 0), to: E.idx(4, 0) });
+  assert.ok(u.extra.length === 1 && !st.board[E.idx(3, 0)]);
+});
+t('Phá Trận: Xe đi xuyên quân mình', () => {
+  const b = kings(empty()); put(b, 9, 0, 'R', 'r'); put(b, 6, 0, 'P', 'r');
+  assert.ok(!tos(raw({}, {}, b), 9, 0).includes('4,0'));
+  assert.ok(tos(raw({ R: 'r_phatran' }, {}, b), 9, 0).includes('4,0'));
+});
+t('Hãn Mã: Pháo không ăn được Mã', () => {
+  const b = kings(empty()); put(b, 9, 0, 'C', 'b'); put(b, 7, 0, 'P', 'r'); put(b, 5, 0, 'H', 'r');
+  assert.ok(tos(raw({}, {}, b), 9, 0).includes('5,0'));
+  assert.ok(!tos(raw({ H: 'h_hanma' }, {}, b), 9, 0).includes('5,0'));
+});
+
+const exState = (rLo, bLo) => E.createState((rLo && rLo.perks) || {}, (bLo && bLo.perks) || {}, null, { r: rLo || {}, b: bLo || {} });
+t('Danh Tướng thay đúng 1 quân, mang perk riêng', () => {
+  const st = exState({ general: { id: 'quanvu', slot: 1 } });
+  const sq = CTQ.slotSquares('H', 'r')[1];
+  assert.strictEqual(st.board[sq].g, 'quanvu');
+  assert.strictEqual(st.board[CTQ.slotSquares('H', 'r')[0]].g, undefined);
+  // Thiên Lý Mã: Mã không bị Tượng cản chân
+  assert.ok(E.legalMovesFrom(st, sq).some((m) => m.to === E.idx(8, 5)));
+});
+t('Achilles: Xe không ăn được, Tốt thì được', () => {
+  const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 4, 0, 'P', 'b');
+  const st = exStateBoard(b, { general: { id: 'achilles' } });
+  assert.ok(!tos(st, 2, 0).includes('5,0'));
+  st.turn = 'b';
+  assert.ok(E.legalMovesFrom(st, E.idx(4, 0)).some((m) => m.to === E.idx(5, 0)));
+});
+function exStateBoard(board, rLo, bLo) {
+  const st = E.createState({}, {}, board, { r: {}, b: {} });
+  st.ex.gen.r = rLo && rLo.general ? rLo.general.id : null;
+  st.ex.strat.r = rLo && rLo.strategist || null;
+  st.ex.strat.b = bLo && bLo.strategist || null;
+  delete st.sets; return st;
+}
+t('Lê Lai thế thân Tướng khi bị chiếu', () => {
+  const b = empty(); put(b, 9, 4, 'K', 'r'); put(b, 8, 4, 'A', 'r'); b[E.idx(8, 4)].g = 'lelai'; put(b, 0, 3, 'K', 'b'); put(b, 9, 0, 'R', 'b');
+  const st = exStateBoard(b, { general: { id: 'lelai' } });
+  assert.ok(E.inCheck(st, 'r'));
+  assert.ok(E.legalMovesFrom(st, E.idx(8, 4)).some((m) => m.swap && m.to === E.idx(9, 4)));
+});
+t('Bát Trận Đồ vô hiệu Thiên Lý Mã của địch', () => {
+  const b = kings(empty()); put(b, 7, 4, 'H', 'r'); put(b, 6, 4, 'P', 'r');
+  assert.ok(tos(raw({ H: 'h_thienly' }, {}, b), 7, 4).includes('5,3'));
+  const st = exStateBoard(b, null, { strategist: 'giacatluong' }); st.perks.r.H = 'h_thienly';
+  assert.ok(!tos(st, 7, 4).includes('5,3'));
+});
+t('Phong Toả: quân địch đứng yên 2 lượt, hoàn tác đúng', () => {
+  const st = exState({ strategist: 'giacatluong' }, {});
+  const target = E.idx(0, 0); // Xe Đen
+  const m = E.genSkillMoves(st, 'r', 'phongtoa').find((x) => x.from === target);
+  const key0 = E.positionKey(st);
+  const u = E.makeMove(st, m);
+  assert.ok(!E.legalMoves(st).some((x) => x.from === target));
+  E.makeMove(st, E.legalMoves(st)[0]); // Đen đi lượt 1
+  E.makeMove(st, E.legalMoves(st).find((x) => !x.skill)); // Đỏ
+  assert.ok(!E.legalMoves(st).some((x) => x.from === target)); // vẫn bị phong toả lượt 2
+  E.makeMove(st, E.legalMoves(st).find((x) => x.from !== target));
+  E.makeMove(st, E.legalMoves(st).find((x) => !x.skill));
+  assert.ok(E.legalMoves(st).some((x) => x.from === target)); // hết phong toả
+  // chiêu 1 lần: không dùng lại được
+  assert.strictEqual(E.genSkillMoves(st, 'b', 'phongtoa').length, 0);
+  const st2 = exState({ strategist: 'giacatluong' }, {});
+  const u2 = E.makeMove(st2, m); E.unmakeMove(st2, u2);
+  assert.strictEqual(E.positionKey(st2), key0);
+});
+t('Hồi chiêu: Điều Binh dùng lại sau 3 lượt', () => {
+  const st = exState({ strategist: 'ngothinham' }, {});
+  const ok = () => E.genSkillMoves(st, 'r', 'dieubinh').length > 0;
+  assert.ok(ok());
+  E.makeMove(st, E.genSkillMoves(st, 'r', 'dieubinh')[0]);
+  let waits = 0;
+  while (true) {
+    E.makeMove(st, E.legalMoves(st).find((x) => !x.skill)); // Đen
+    if (ok()) break;
+    waits++;
+    E.makeMove(st, E.legalMoves(st).find((x) => !x.skill)); // Đỏ đi thường
+  }
+  assert.strictEqual(waits, 3);
+});
+t('Chiêu Binh, Tâm Công, Salamis', () => {
+  const mk = () => { const b = kings(empty()); put(b, 6, 0, 'P', 'r'); put(b, 6, 4, 'P', 'b'); put(b, 7, 2, 'P', 'b'); return b; };
+  const st = exStateBoard(mk(), { strategist: 'nguyentrai' });
+  assert.ok(E.genSkillMoves(st, 'r', 'chieubinh').length === 3);
+  const tm = E.genSkillMoves(st, 'r', 'tamcong');
+  assert.strictEqual(tm.length, 2);
+  E.makeMove(st, tm[0]);
+  assert.strictEqual(st.board[tm[0].from].s, 'r');
+  const st3 = exStateBoard(mk(), { strategist: 'themistocles' });
+  const u = E.makeMove(st3, E.genSkillMoves(st3, 'r', 'salamis')[0]);
+  assert.strictEqual(u.extra.length, 2);
+});
+t('Thử ngẫu nhiên: 40 ván bản mở rộng, hoàn tác luôn khớp', () => {
+  let seed = 3; const rng = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+  let plies = 0, skills = 0;
+  for (let g = 0; g < 40; g++) {
+    const st = exState(CTQ.randomExLoadout(rng), CTQ.randomExLoadout(rng));
+    for (let ply = 0; ply < 120; ply++) {
+      const moves = E.legalMoves(st);
+      if (!moves.length) break;
+      const sk = moves.filter((m) => m.skill);
+      const m = sk.length && rng() < 0.3 ? sk[Math.floor(rng() * sk.length)] : moves[Math.floor(rng() * moves.length)];
+      const before = E.positionKey(st), boardBefore = st.board.slice();
+      const u = E.makeMove(st, m); E.unmakeMove(st, u);
+      assert.strictEqual(E.positionKey(st), before);
+      assert.ok(st.board.every((p, i) => p === boardBefore[i]));
+      E.makeMove(st, m); plies++; if (m.skill) skills++;
+      assert.ok(E.findKing(st, 'r') >= 0 && E.findKing(st, 'b') >= 0);
+    }
+  }
+  assert.ok(skills > 50, 'chiêu được dùng ' + skills);
+});
+
 t('Chiếu bí bằng Xe đôi', () => {
   const b = empty(); put(b, 0, 4, 'K', 'b'); put(b, 9, 3, 'K', 'r'); put(b, 1, 0, 'R', 'r'); put(b, 0, 8, 'R', 'r');
   const st = raw({}, {}, b); st.turn = 'b';

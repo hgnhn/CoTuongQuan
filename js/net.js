@@ -11,8 +11,27 @@
   const PREFIX = 'cotuongquan-';
   const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
+  // Trình duyệt nhúng trong app chat (Zalo, Messenger, Facebook…) hay thiếu WebRTC
+  CTQ.inAppBrowser = function () {
+    const ua = navigator.userAgent || '';
+    if (/Zalo/i.test(ua)) return 'Zalo';
+    if (/FBAN|FBAV|FB_IAB|FBIOS|Messenger/i.test(ua)) return 'Facebook/Messenger';
+    if (/Instagram/i.test(ua)) return 'Instagram';
+    if (/\bLine\//i.test(ua)) return 'LINE';
+    if (/musical_ly|TikTok|BytedanceWebview/i.test(ua)) return 'TikTok';
+    if (/; wv\)/.test(ua)) return 'ứng dụng';
+    return '';
+  };
+  CTQ.hasWebRTC = () => typeof root.RTCPeerConnection === 'function';
+
   let loading = null;
   function loadPeerJS() {
+    if (!CTQ.hasWebRTC()) {
+      const app = CTQ.inAppBrowser();
+      return Promise.reject(new Error(app
+        ? `Trình duyệt bên trong ${app} không hỗ trợ chơi trực tuyến. Bấm nút ⋯ hoặc ⋮ ở góc màn hình, chọn "Mở bằng trình duyệt" (Chrome/Safari) rồi thử lại.`
+        : 'Trình duyệt này không hỗ trợ chơi trực tuyến (thiếu WebRTC). Hãy dùng Chrome, Safari, Edge hoặc Firefox bản mới.'));
+    }
     if (root.Peer) return Promise.resolve();
     if (loading) return loading;
     loading = new Promise((resolve, reject) => {
@@ -59,6 +78,12 @@
             if (!this.peer) reject(friendlyError(err)); else this.emit('error', friendlyError(err));
           });
           peer.on('disconnected', () => { if (this.peer && !this.peer.destroyed) this.peer.reconnect(); });
+          if (!this.onVis) {
+            this.onVis = () => {
+              if (document.visibilityState === 'visible' && this.peer && this.peer.disconnected && !this.peer.destroyed) this.peer.reconnect();
+            };
+            document.addEventListener('visibilitychange', this.onVis);
+          }
         };
         tryOpen(0);
       });
@@ -75,7 +100,8 @@
         const fail = (e) => { if (!done) { done = true; reject(e); } else this.emit('error', e); };
         peer.on('open', () => {
           const conn = peer.connect(PREFIX + this.code, { reliable: true });
-          const timer = setTimeout(() => fail(new Error('Không tìm thấy phòng. Kiểm tra lại mã phòng.')), 12000);
+          // Phòng có tồn tại nhưng không bắt tay được (mạng chặn kết nối trực tiếp)
+          const timer = setTimeout(() => fail(new Error('Tìm thấy phòng nhưng không kết nối được tới chủ phòng. Hãy thử đổi mạng (Wi-Fi ↔ 4G) hoặc mở bằng Chrome/Safari.')), 20000);
           conn.on('open', () => { clearTimeout(timer); done = true; resolve(); });
           this.attach(conn);
         });
@@ -97,6 +123,7 @@
     send(msg) { if (this.conn && this.conn.open) this.conn.send(msg); }
 
     close() {
+      if (this.onVis) { document.removeEventListener('visibilitychange', this.onVis); this.onVis = null; }
       try { if (this.conn) this.conn.close(); } catch (e) { /* bỏ qua */ }
       try { if (this.peer) this.peer.destroy(); } catch (e) { /* bỏ qua */ }
       this.conn = null; this.peer = null; this.handlers = {};
@@ -105,7 +132,7 @@
 
   function friendlyError(err) {
     const t = err && err.type;
-    if (t === 'peer-unavailable') return new Error('Không tìm thấy phòng. Kiểm tra lại mã phòng.');
+    if (t === 'peer-unavailable') return new Error('Không tìm thấy phòng. Có thể chủ phòng đã huỷ phòng, hoặc đã rời màn hình game quá lâu (điện thoại tắt tab). Nhờ chủ phòng mở lại game rồi tạo phòng mới.');
     if (t === 'network' || t === 'server-error' || t === 'socket-error') return new Error('Mất kết nối tới máy chủ môi giới. Kiểm tra mạng rồi thử lại.');
     if (t === 'browser-incompatible') return new Error('Trình duyệt này không hỗ trợ WebRTC.');
     return err instanceof Error ? err : new Error(String(err));

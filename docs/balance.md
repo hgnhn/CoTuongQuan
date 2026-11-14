@@ -105,3 +105,56 @@ Trong mỗi loại quân, chênh lệch giữa perk mạnh nhất và yếu nh�
 
 - AI tự đấu ở độ sâu thấp (40 ms/nước) chơi kém hơn người, nên perk cần tính toán xa (Tử Sĩ, Liên Hoàn, Ngự Giá) có thể bị đo thấp hơn giá trị thật khi người chơi.
 - Nên thu thập số liệu từ ván người chơi thật sau khi ra mắt rồi chỉnh tiếp.
+
+## Bản 0.4.0: perk mới và Bản mở rộng
+
+### Perk mới (chế độ thường), 32–36 ván/perk
+
+| Quân | Perk | Điểm | Ghi chú |
+|------|------|-----:|---------|
+| Tượng | Voi Giày | 0.36 → 0.54 | Ban đầu chỉ giẫm Tốt; nay giẫm cả Tốt, Sĩ, Tượng |
+| Xe | Phá Trận | 0.61 | |
+| Pháo | Hoả Công | 0.52 → 0.60 | Ban đầu chỉ thiêu 1 ô sau mục tiêu; nay thêm 2 ô hai bên |
+| Mã | Hãn Mã | 0.67 | |
+
+### Danh Tướng
+
+Cách đo: bên có Danh Tướng (không perk, không Quân Sư) đấu với bên không có gì, 24–32 ván. Mục tiêu khoảng 0.65–0.75. Danh Tướng là "quân gánh trận" nên được phép mạnh hơn một perk thường.
+
+| Danh Tướng | Đợt 1 | Đợt 2 | Đợt 3 | Thay đổi cuối |
+|------------|------:|------:|------:|---------------|
+| Trần Hưng Đạo | 0.79 | 0.77 | 0.86 | Bỏ Hịch Tướng Sĩ (ban perk cho Tốt); còn Xuất Cung (thêm 1 hàng trước cung), Khinh Công, Bát Quái Bộ. *Chưa đo lại* |
+| Leonidas | 0.63 | | 0.70 | |
+| Lê Lai | 0.60 | | | |
+| Hứa Chử | 0.60 | | | |
+| Bà Triệu | 0.48 | 0.41 | 0.78 | Thêm Cưỡi Voi Xung Trận (đi thẳng 1–2 ô), bỏ Voi Giày. *Chưa đo lại* |
+| Hannibal | 0.67 | | 0.72 | |
+| Lữ Bố | 0.79 | 0.89 | 0.78 | Bỏ ăn chéo; còn Thiết Giáp, Chiến Xa. *Chưa đo lại* |
+| Achilles | 0.92 | 0.86 | 0.84 | Gót Chân chỉ còn miễn nhiễm Xe. *Chưa đo lại* |
+| Hồ Nguyên Trừng | 0.56 | 0.68 | | Song Ngòi + Cận Chiến |
+| Archimedes | 0.79 | 0.71 | | Pháo Chéo + Hoả Công |
+| Quan Vũ | 0.85 | 0.66 | | Bỏ Chiến Mã |
+| Richard Tim Sư Tử | 0.69 | | | |
+| Yết Kiêu | 0.48 | 0.61 | | Thêm Xung Phong |
+| Spartacus | 0.54 | 0.57 | 0.52 | Khởi Nghĩa đi 1 ô mọi hướng ở mọi nơi + Xung Phong. *Chưa đo lại* |
+
+### Quân Sư
+
+| Quân Sư | Đợt 1 | Đợt 2 | Đợt 3 | Thay đổi cuối |
+|---------|------:|------:|------:|---------------|
+| Gia Cát Lượng | 0.56 | 0.54 | 0.55 | Không Thành Kế dùng 2 lần, Mượn Gió Đông hồi 4. *Chưa đo lại* |
+| Tư Mã Ý | 0.58 | 0.50 | 0.66 | Kiên Thủ chặn cả Pháo và Mã; hồi chiêu ngắn hơn |
+| Nguyễn Trãi | 0.75 | 0.77 | 0.75 | Nội tại đổi sang Liên Hoàn; Chiêu Binh hồi 12. *Chưa đo lại* |
+| Ngô Thì Nhậm | 0.52 | 0.71 | | Nội tại thêm Xung Phong |
+| Tôn Tử | 0.75 | 0.63 | | Phong Toả hồi 10, Hộ Thể hồi 5 |
+| Themistocles | 0.63 | | | |
+
+### Giới hạn của phép đo
+
+- Bên đối chứng không mang perk nào, nên các nội tại khắc chế perk địch bị đánh giá thấp. Ví dụ Bát Trận Đồ của Gia Cát Lượng chặn Thiên Lý Mã và Ô Truy, nhưng đối thủ lúc đo không có Mã mang perk.
+- Sai số khoảng ±0.08–0.1 với 24–32 ván. Các lựa chọn đánh dấu *Chưa đo lại* đã được chỉnh sau lần đo cuối, cần chạy lại:
+
+```bash
+node tests/balance-ex.js gen 32 40 tranhungdao,lubo,achilles,batrieu,spartacus
+node tests/balance-ex.js strat 32 40 nguyentrai,giacatluong
+```

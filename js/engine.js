@@ -166,7 +166,7 @@
     const T = pset(state, tgt);
     const a = att.t;
     if (T.size) {
-      if (T.has('g_gotchan') && (a === 'R' || a === 'C' || a === 'H')) return false;
+      if (T.has('g_gotchan') && (a === 'R' || a === 'C')) return false;
       if (T.has('g_lansong')) { const r = rowOf(tsq); if (r === 4 || r === 5) return false; }
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
@@ -176,7 +176,7 @@
     }
     if (state.ex) {
       if (state.ex.shd[tgt.s] === tsq) return false;
-      if (a === 'C' && flag(state, tgt.s, 'kienthu') && inPalace(tgt.s, rowOf(tsq), colOf(tsq))) return false;
+      if ((a === 'C' || a === 'H') && flag(state, tgt.s, 'kienthu') && inPalace(tgt.s, rowOf(tsq), colOf(tsq))) return false;
     }
     return true;
   }
@@ -275,6 +275,9 @@
         }
         if (P.has('e_tieubo')) {
           for (const [dr, dc] of DIAG) { const tr = r + dr, tc = c + dc; if (onBoard(tr, tc) && ownHalf(s, tr)) step(tr, tc); }
+        }
+        if (P.has('g_cuoivoi')) {
+          for (const [dr, dc] of ORTH) slide(dr, dc, 2, crossOk ? null : (tr) => ownHalf(s, tr));
         }
         if (P.has('g_vuotalps')) {
           for (const [dr, dc] of DIAG) slide(dr, dc, 3, crossOk ? null : (tr) => ownHalf(s, tr));

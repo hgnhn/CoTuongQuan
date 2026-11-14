@@ -140,7 +140,7 @@ t('Danh Tướng thay đúng 1 quân, mang perk riêng', () => {
   // Thiên Lý Mã: Mã không bị Tượng cản chân
   assert.ok(E.legalMovesFrom(st, sq).some((m) => m.to === E.idx(8, 5)));
 });
-t('Achilles: chỉ Tốt ăn được', () => {
+t('Achilles: Xe không ăn được, Tốt thì được', () => {
   const b = kings(empty()); put(b, 5, 0, 'R', 'r'); b[E.idx(5, 0)].g = 'achilles'; put(b, 2, 0, 'R', 'b'); put(b, 4, 0, 'P', 'b');
   const st = exStateBoard(b, { general: { id: 'achilles' } });
   assert.ok(!tos(st, 2, 0).includes('5,0'));

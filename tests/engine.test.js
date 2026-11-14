@@ -291,7 +291,7 @@ t('Phong Toả: quân địch đứng yên 2 lượt, hoàn tác đúng', () => 
   const u2 = E.makeMove(st2, m); E.unmakeMove(st2, u2);
   assert.strictEqual(E.positionKey(st2), key0);
 });
-t('Hồi chiêu: Điều Binh dùng lại sau 3 lượt', () => {
+t('Hồi chiêu: Điều Binh dùng lại sau 2 lượt', () => {
   const st = exState({ strategist: 'ngothinham' }, {});
   const ok = () => E.genSkillMoves(st, 'r', 'dieubinh').length > 0;
   assert.ok(ok());
@@ -303,7 +303,7 @@ t('Hồi chiêu: Điều Binh dùng lại sau 3 lượt', () => {
     waits++;
     E.makeMove(st, E.legalMoves(st).find((x) => !x.skill)); // Đỏ đi thường
   }
-  assert.strictEqual(waits, 3);
+  assert.strictEqual(waits, 2);
 });
 t('Chiêu Binh, Tâm Công, Salamis', () => {
   const mk = () => { const b = kings(empty()); put(b, 6, 0, 'P', 'r'); put(b, 6, 4, 'P', 'b'); put(b, 7, 2, 'P', 'b'); return b; };

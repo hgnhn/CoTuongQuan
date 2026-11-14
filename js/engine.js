@@ -253,12 +253,12 @@
           for (const [dr, dc] of ALL8) { const tr = r + dr, tc = c + dc; addIf(tr, tc, onBoard(tr, tc) && ownHalf(s, tr)); }
         }
         if (P.has('g_thethan') && !capOnly) {
-          // Liều Mình Cứu Chúa: đổi chỗ với Tướng đang bị chiếu đứng sát bên
+          // Liều Mình Cứu Chúa: đổi chỗ với Tướng đứng sát bên
           for (const [dr, dc] of ALL8) {
             const tr = r + dr, tc = c + dc;
             if (!onBoard(tr, tc)) continue;
             const q = B[idx(tr, tc)];
-            if (q && q.t === 'K' && q.s === s && inPalace(s, r, c) && E.inCheck(state, s)) out.push({ from, to: idx(tr, tc), swap: true });
+            if (q && q.t === 'K' && q.s === s && inPalace(s, r, c)) out.push({ from, to: idx(tr, tc), swap: true });
           }
         }
         break;
@@ -382,7 +382,7 @@
         if (crossed || P.has('p_linhhoat')) { add(r, c - 1); add(r, c + 1); }
         if (P.has('p_xungphong') && !crossed && onBoard(r + f, c) && !B[idx(r + f, c)]) add(r + 2 * f, c);
         if (crossed && P.has('g_tamdiep')) add(r - f, c);
-        if (P.has('g_khoinghia')) for (const [dr, dc] of ALL8) add(r + dr, c + dc);
+        if (crossed && P.has('g_khoinghia')) for (const [dr, dc] of ALL8) add(r + dr, c + dc);
         break;
       }
     }

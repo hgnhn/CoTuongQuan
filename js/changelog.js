@@ -5,10 +5,14 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
-      v: '0.5.1', date: '15/11/2026', title: 'Giảm sức mạnh Hoả Công',
+      v: '0.5.1', date: '15/11/2026', title: 'Hoả Công và cân bằng theo cả đội hình',
       items: [
         'Hoả Công chỉ còn thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng); 2 ô bên không còn bị lửa lan.',
         'Giữ nguyên: Pháo chết vì ăn Tử Sĩ thì không phát lửa; miễn nhiễm Pháo và Hộ Thể vẫn chặn lửa.',
+        'Cân bằng lại bản mở rộng theo 800 ván đội hình đầy đủ đấu nhau (Danh Tướng + Quân Sư + perk), thay vì đo từng món riêng lẻ.',
+        'Achilles: Phá Trận đổi thành Chiến Xa. Spartacus: Khởi Nghĩa chỉ có hiệu lực sau khi qua sông.',
+        'Hồ Nguyên Trừng thêm Hoả Công; Quan Vũ thêm Chiến Mã; Lữ Bố thêm Phá Trận; Lê Lai thế thân Tướng được cả khi Tướng không bị chiếu.',
+        'Gia Cát Lượng: Không Thành Kế còn 1 lần. Tôn Tử: Phong Toả hồi 7, Hộ Thể hồi 4. Ngô Thì Nhậm: Điều Binh hồi 2.',
         'Trận trực tuyến yêu cầu cả hai bên dùng bản 0.5.1. Nếu thấy luật cũ, bấm Tải bản mới ở nhật ký cập nhật.',
       ],
     },

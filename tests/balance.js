@@ -2,7 +2,7 @@
 // 1) Độ cơ động: số nước đi tăng thêm trung bình của mỗi quân khi mang perk,
 //    đo trên các thế cờ trung cuộc lấy từ ván AI tự đấu.
 // 2) Tự đấu: bên có perk (chỉ 1 loại quân) đấu với bên không perk, đổi màu luân phiên.
-require('../js/data.js'); require('../js/engine.js'); require('../js/ai.js');
+require('../js/config.js'); require('../js/data.js'); require('../js/expansion.js'); require('../js/engine.js'); require('../js/ai.js');
 const CTQ = globalThis.CTQ, E = CTQ.Engine, AI = CTQ.AI;
 
 const GAMES = +process.argv[2] || 16;

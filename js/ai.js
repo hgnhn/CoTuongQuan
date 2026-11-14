@@ -15,11 +15,18 @@
   AI.PERK_BONUS = {
     k_batquai: 0, k_khinhcong: 0, k_ngugia: 0, k_hoanvi: 0,
     a_canve: 25, a_tuantra: 20, a_kimcuong: 30, a_tusi: 30,
-    e_vuotgiang: 10, e_voichien: 15, e_tieubo: 10,
-    r_thietgiap: 50, r_chienxa: 40, r_phaoxa: 40,
-    c_songngoi: 70, c_canchien: 60, c_phaocheo: 60,
-    h_thienly: 60, h_chienma: 70, h_otruy: 70,
+    e_vuotgiang: 10, e_voichien: 15, e_tieubo: 10, e_voigiay: 15,
+    r_thietgiap: 50, r_chienxa: 40, r_phaoxa: 40, r_phatran: 40,
+    c_songngoi: 70, c_canchien: 60, c_phaocheo: 60, c_hoacong: 60,
+    h_thienly: 60, h_chienma: 70, h_otruy: 70, h_hanma: 50,
     p_linhhoat: 20, p_xungphong: 15, p_lienhoan: 20, p_thangcap: 20,
+  };
+
+  // Giá trị cộng thêm của quân Danh Tướng (đo bằng tests/balance-ex.js)
+  AI.GEN_BONUS = {
+    tranhungdao: 0, leonidas: 0, lelai: 150, hachu: 150, batrieu: 200, hannibal: 200,
+    lubo: 250, achilles: 350, honguyentrung: 200, archimedes: 200,
+    quanvu: 200, richard: 200, yetkieu: 150, spartacus: 150,
   };
 
   const MATE = 100000;
@@ -27,7 +34,7 @@
   function pieceScore(state, p, i) {
     const r = E.rowOf(i), c = E.colOf(i);
     const perk = state.perks[p.s][p.t];
-    let v = VAL[p.t] + (AI.PERK_BONUS[perk] || 0);
+    let v = VAL[p.t] + (p.g ? AI.GEN_BONUS[p.g] || 150 : AI.PERK_BONUS[perk] || 0);
     const adv = p.s === 'r' ? 9 - r : r; // số hàng đã tiến (0..9)
     const center = 4 - Math.abs(c - 4);
     switch (p.t) {
@@ -71,6 +78,7 @@
   AI.evaluate = evaluate;
 
   function moveOrderScore(state, m) {
+    if (m.skill) return 50;
     const tgt = state.board[m.to];
     if (tgt && !m.swap) return 10 * VAL[tgt.t] - VAL[state.board[m.from].t] / 10 + 10000;
     return 0;

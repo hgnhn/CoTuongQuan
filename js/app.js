@@ -521,9 +521,7 @@
     game.info = { p };
     const legal = E.legalMovesFrom(st, sq);
     // Nước nào chỉ có nhờ perk thì tô màu riêng
-    const alt = E.cloneState(st);
-    alt.perks[p.s][p.t] = '';
-    const baseSet = new Set(E.genPieceMoves(alt, sq).map((m) => m.to));
+    const baseSet = new Set(E.baseMovesFrom(st, sq).map((m) => m.to));
     game.moves = legal.map((m) => ({ m, to: m.to, kind: m.swap || !baseSet.has(m.to) ? 'perk' : 'base' }));
   }
 

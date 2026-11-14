@@ -1,0 +1,8 @@
+{
+  "name": "cotuongquan-mastery-server",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "scripts": { "prepare:rules": "node prepare.cjs" },
+  "dependencies": { "firebase-admin": "^14.5.1", "firebase-functions": "^7.0.0" }
+}

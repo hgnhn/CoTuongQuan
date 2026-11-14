@@ -17,6 +17,8 @@
     // peer: { host: 'peer.example.com', port: 443, path: '/', secure: true },
     peer: null,
     firebase: null,
+    // Bật sau khi cấu hình Firebase Auth và deploy server/ theo docs/mastery.md.
+    masteryCloud: { enabled: false, region: 'asia-southeast1' },
     // Ví dụ:
     // firebase: {
     //   apiKey: '...',

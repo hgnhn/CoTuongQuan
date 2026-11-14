@@ -90,9 +90,14 @@
     const [latest, ...older] = CTQ.CHANGELOG;
     const entry = (c) => `<h3>${esc(c.title)} <span class="cl-ver">v${esc(c.v)} · ${esc(c.date)}</span></h3><ul>${c.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`;
     $('#changelog').innerHTML = `
-      <div class="cl-head"><h2>Cập nhật</h2>${seen !== latest.v ? '<span class="cl-new">Mới</span>' : ''}</div>
+      <div class="cl-head"><h2>Cập nhật</h2>${seen !== latest.v ? '<span class="cl-new">Mới</span>' : ''}<button type="button" class="link-btn" id="refresh-version">Tải bản mới</button></div>
       ${entry(latest)}
       <details class="cl-older"><summary>Các bản trước</summary>${older.map(entry).join('')}</details>`;
+    $('#refresh-version').addEventListener('click', () => {
+      const url = new URL(location.href);
+      url.searchParams.set('v', Date.now().toString(36));
+      location.replace(url.href);
+    });
     // đánh dấu đã xem sau khi người chơi rời sảnh lần đầu
     if (seen !== latest.v) setTimeout(() => store.set('seenVersion', latest.v), 4000);
   }

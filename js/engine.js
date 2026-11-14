@@ -526,15 +526,10 @@
         if (placed && mover.t === 'C' && MP.has('c_hoacong')) {
           const dr = Math.sign(rowOf(m.to) - rowOf(m.from)), dc = Math.sign(colOf(m.to) - colOf(m.from));
           const br = rowOf(m.to) + dr, bc = colOf(m.to) + dc;
-          // Ô sau mục tiêu thiêu mọi quân trừ Tướng; hai ô bên chỉ thiêu Tốt/Sĩ/Tượng.
-          // Hai ô bên vuông góc với hướng bắn, kể cả khi có thêm perk Pháo Chéo.
-          for (const [sr, sc] of [[0, 0], [dc, -dr], [-dc, dr]]) {
-            const rr = br + sr, cc = bc + sc;
-            if (!onBoard(rr, cc)) continue;
-            const b = idx(rr, cc), q = B[b];
-            if (!q || q.s === s || q.t === 'K') continue;
-            if ((sr !== 0 || sc !== 0) && q.t !== 'P' && q.t !== 'A' && q.t !== 'E') continue;
-            if (canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
+          // Chỉ thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng).
+          if (onBoard(br, bc)) {
+            const b = idx(br, bc), q = B[b];
+            if (q && q.s !== s && q.t !== 'K' && canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
           }
         }
         // Voi Giày: giẫm chết Tốt địch quanh ô vừa ăn

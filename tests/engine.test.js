@@ -120,7 +120,7 @@ t('Hoả Công: bắn xuyên quân phía sau mục tiêu', () => {
   const u = E.makeMove(st, { from: E.idx(9, 0), to: E.idx(4, 0) });
   assert.ok(u.extra.length === 1 && !st.board[E.idx(3, 0)]);
 });
-t('Hoả Công: hai ô bên chỉ thiêu Tốt/Sĩ/Tượng, đủ 8 hướng và hai màu', () => {
+t('Hoả Công: chỉ thiêu quân ngay sau lưng mục tiêu, 2 ô bên không bị ảnh hưởng (8 hướng, hai màu)', () => {
   const directions = [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]];
   for (const side of ['r', 'b']) for (const [dr, dc] of directions) {
     for (const flanks of [['H', 'C'], ['R', 'H'], ['P', 'A'], ['E', 'P']]) {
@@ -134,19 +134,15 @@ t('Hoả Công: hai ô bên chỉ thiêu Tốt/Sĩ/Tượng, đủ 8 hướng v�
       const perks = { C: 'c_hoacong', R: 'r_phatran' };
       const st = E.createState(perks, perks, b, { r: {}, b: {} });
       st.turn = side;
-      if (dr && dc) {
-        // Kiểm tra hình học Hoả Công độc lập với bộ perk hiện tại của Danh Tướng.
-        E.pieceSet(st, b[E.idx(4, 4)]).add('c_phaocheo');
-      }
+      if (dr && dc) E.pieceSet(st, b[E.idx(4, 4)]).add('c_phaocheo'); // thử cả hướng chéo
       const move = { from: E.idx(4, 4), to: E.idx(4 + 2 * dr, 4 + 2 * dc) };
       assert.ok(E.genPieceMoves(st, move.from).some((m) => m.to === move.to));
       const before = b.slice(), key = E.positionKey(st);
       const u = E.makeMove(st, move);
-      const light = flanks.every((t) => ['P', 'A', 'E'].includes(t));
-      assert.strictEqual(u.extra.length, light ? 3 : 1);
-      assert.strictEqual(b[E.idx(br, bc)], null); // vẫn thiêu Xe ở ô chính
-      assert.strictEqual(b[E.idx(br + dc, bc - dr)], light ? null : before[E.idx(br + dc, bc - dr)]);
-      assert.strictEqual(b[E.idx(br - dc, bc + dr)], light ? null : before[E.idx(br - dc, bc + dr)]);
+      assert.strictEqual(u.extra.length, 1);
+      assert.strictEqual(b[E.idx(br, bc)], null); // quân sau lưng bị thiêu
+      assert.strictEqual(b[E.idx(br + dc, bc - dr)], before[E.idx(br + dc, bc - dr)]);
+      assert.strictEqual(b[E.idx(br - dc, bc + dr)], before[E.idx(br - dc, bc + dr)]);
       E.unmakeMove(st, u);
       assert.deepStrictEqual(st.board, before); assert.strictEqual(E.positionKey(st), key);
     }

@@ -5,6 +5,14 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.5.1', date: '15/11/2026', title: 'Giảm sức mạnh Hoả Công',
+      items: [
+        'Hoả Công chỉ còn thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng); 2 ô bên không còn bị lửa lan.',
+        'Giữ nguyên: Pháo chết vì ăn Tử Sĩ thì không phát lửa; miễn nhiễm Pháo và Hộ Thể vẫn chặn lửa.',
+        'Trận trực tuyến yêu cầu cả hai bên dùng bản 0.5.1. Nếu thấy luật cũ, bấm Tải bản mới ở nhật ký cập nhật.',
+      ],
+    },
+    {
       v: '0.5.0', date: '14/11/2026', title: 'Thông thạo: Ấn ký chiến công',
       items: [
         'Thêm thông thạo riêng cho 14 Danh Tướng và 6 Quân Sư, gồm 8 cấp huy hiệu phong cách sơn mài.',

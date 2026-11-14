@@ -67,9 +67,15 @@
 .mastery-mini-label { color: var(--gold-soft); font-size: .75rem; }
 .mastery-signature { display: inline-flex; align-items: center; gap: 3px; font-size: .65rem; color: var(--gold-soft); }
 .game-board-wrap { position: relative; }
-.mastery-emote { position: absolute; z-index: 4; top: 38%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; width: min(300px, 90%); padding: 12px 20px 24px; border: 1px solid #c9a24a77; border-radius: 12px; background: radial-gradient(ellipse, #4c2c22ee, #21120df0); box-shadow: 0 14px 50px #0009; pointer-events: none; animation: mastery-enter .25s ease-out; text-align: center; }
-.mastery-emote strong { font-family: var(--f-display); color: var(--gold-soft); font-size: 1.6rem; }
-.mastery-emote > span:last-child { color: var(--egg-dim); font-size: .8rem; }
+.mastery-emote { position: absolute; z-index: 4; top: 38%; left: 50%; transform: translate(-50%, -50%); width: min(420px, 94%); padding: 16px; border: 1px solid #c9a24a77; border-radius: 12px; background: radial-gradient(ellipse, #4c2c22f5, #21120df5); box-shadow: 0 14px 50px #0009; pointer-events: none; animation: mastery-enter .25s ease-out; text-align: center; }
+.mastery-emote-owner { color: var(--gold-soft); font-size: .8rem; margin-bottom: 12px; overflow-wrap: anywhere; }
+.mastery-emote-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.mastery-emote-hero { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+.mastery-emote-hero + .mastery-emote-hero { border-left: 1px solid #c9a24a44; padding-left: 12px; }
+.mastery-emote-hero .mastery-badge { width: clamp(70px, 15vw, 112px); height: clamp(70px, 15vw, 112px); }
+.mastery-emote-hero strong { font-family: var(--f-display); color: var(--gold-soft); font-size: clamp(1rem, 3vw, 1.3rem); line-height: 1.2; }
+.mastery-emote-hero > span:not(.mastery-badge):not(.eyebrow) { font-size: .7rem; }
+.mastery-emote-hero .eyebrow { font-size: .6rem; letter-spacing: .1em; }
 @keyframes mastery-enter { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
 @media (prefers-reduced-motion: reduce) { .mastery-emote { animation: none; } }
 @media (max-width: 900px) {

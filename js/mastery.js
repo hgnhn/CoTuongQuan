@@ -155,11 +155,13 @@
     return { heroes: Object.fromEntries(keys.filter((k) => M.character(k)).map((k) => [k, M.get(user, k)])),
       showcase: p.showcase ? { key: p.showcase, ...M.get(user, p.showcase) } : null };
   };
-  M.sanitizeSnapshot = (value) => {
+  M.sanitizeSnapshot = (value, lineup) => {
     const heroes = {};
+    const expected = lineup ? ['g:' + lineup.general.id, 's:' + lineup.strategist].filter((key) => M.character(key)) : null;
     if (value && value.heroes && typeof value.heroes === 'object') {
-      for (const [key, stats] of Object.entries(value.heroes).slice(0, 20)) if (M.character(key)) heroes[key] = M.stats(stats);
+      for (const [key, stats] of Object.entries(value.heroes).slice(0, 20)) if (M.character(key) && (!expected || expected.includes(key))) heroes[key] = M.stats(stats);
     }
+    if (expected) for (const key of expected) if (!own(heroes, key)) heroes[key] = M.stats();
     const showcase = value && value.showcase;
     return { heroes, showcase: showcase && M.character(showcase.key) ? { key: showcase.key, ...M.stats(showcase) } : null };
   };

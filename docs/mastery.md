@@ -31,7 +31,7 @@ Mỗi hồ sơ có tiến trình riêng cho 14 Danh Tướng và 6 Quân Sư. Hu
 | 7 | Tông Sư | 8.000 |
 | 8 | Huyền Thoại | 12.000 |
 
-Cấp 8 vẫn tích điểm để leo bảng. Một nhân vật có thể được trang bị làm danh hiệu đại diện, hiển thị cạnh tên người chơi. Nút **Khoe thông thạo** bật huy hiệu lớn trên bàn và gửi sang đối thủ (cách nhau tối thiểu 6 giây). Thẻ trên trang Thông thạo có thể sao chép để chia sẻ. Huy hiệu trên bàn là thông thạo do đối thủ chia sẻ từ thiết bị, không phải chứng nhận điểm bảng chung.
+Cấp 8 vẫn tích điểm để leo bảng. Một nhân vật có thể được trang bị làm danh hiệu đại diện, hiển thị cạnh tên người chơi. Nút **Khoe thông thạo** trong trận bật hai thẻ của **Danh Tướng và Quân Sư đang dùng**, với tên, cấp, huy hiệu và điểm của từng nhân vật. Thẻ hiện trên bàn của cả người bấm lẫn đối thủ trong 4 giây; đối thủ cũng có thể bấm để khoe ngược lại, không tốn lượt đi. Không cần trang bị danh hiệu trước, kể cả thông thạo cấp 1 vẫn khoe được. Các lần khoe cách nhau tối thiểu 6 giây. Chỉ nhận dữ liệu của đúng hai nhân vật trong đội hình trận hiện tại. Thẻ trên trang Thông thạo có thể sao chép để chia sẻ. Huy hiệu trên bàn là thông thạo do đối thủ chia sẻ từ thiết bị, không phải chứng nhận điểm bảng chung.
 
 ## Lưu trên trình duyệt (dùng ngay)
 

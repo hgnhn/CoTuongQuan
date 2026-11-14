@@ -651,7 +651,7 @@
         break;
       case 'mastery-showcase':
         if (!game || !game.ex || game.mode !== 'online' || msg.matchId !== game.matchId) return;
-        game.masteryOpponent = CTQ.Mastery.sanitizeSnapshot(msg.snapshot);
+        game.masteryOpponent = CTQ.Mastery.sanitizeSnapshot(msg.snapshot, game.cfg.lineups[E.other(game.mySide)]);
         if (!game.masteryHandshake) {
           game.masteryHandshake = true;
           room.send({ type: 'mastery-showcase', matchId: game.matchId, snapshot: CTQ.Mastery.snapshot(game.masteryUser, game.cfg.lineups[game.mySide]) });
@@ -659,8 +659,8 @@
         }
         if (msg.emote && Date.now() - game.lastOpponentEmote > 6000) {
           game.lastOpponentEmote = Date.now();
-          const badge = game.masteryOpponent.showcase;
-          if (badge) showMasteryEmote(game.masteryOpponent, game.names[E.other(game.mySide)]);
+          const side = E.other(game.mySide);
+          showMasteryEmote(game.masteryOpponent, game.names[side], game.cfg.lineups[side]);
         }
         renderGame();
         break;
@@ -1151,20 +1151,23 @@
   });
 
   CTQ.MasteryView.init({ user: () => Auth.user, toast });
-  function showMasteryEmote(snapshot, name) {
-    const badge = snapshot.showcase; if (!badge) return;
+  function showMasteryEmote(snapshot, name, lineup) {
+    const safe = CTQ.Mastery.sanitizeSnapshot(snapshot, lineup);
+    const heroes = ['g:' + lineup.general.id, 's:' + lineup.strategist];
     const wrap = $('#screen-game .game-board-wrap');
     wrap.querySelector('.mastery-emote')?.remove();
     const el = document.createElement('div'); el.className = 'mastery-emote'; el.setAttribute('role', 'status');
-    el.innerHTML = `${CTQ.MasteryView.badge(badge.points, 'is-large')}<strong>${esc(CTQ.Mastery.character(badge.key).name)}</strong><span>${esc(name)} · Thông thạo ${CTQ.Mastery.tier(badge.points).level}</span>`;
-    wrap.appendChild(el); setTimeout(() => el.remove(), 2800);
+    el.innerHTML = `<p class="mastery-emote-owner">${esc(name)} · Khoe thông thạo</p><div class="mastery-emote-pair">${heroes.map((key) => {
+      const hero = CTQ.Mastery.character(key), stats = safe.heroes[key], tier = CTQ.Mastery.tier(stats.points);
+      return `<div class="mastery-emote-hero" data-mastery-shown="${key}"><span class="eyebrow">${key[0] === 'g' ? 'DANH TƯỚNG' : 'QUÂN SƯ'}</span>${CTQ.MasteryView.badge(stats.points)}<strong>${esc(hero.name)}</strong><span>Thông thạo ${tier.level} · ${esc(tier.name)}</span><span class="muted">${stats.points.toLocaleString('vi-VN')} điểm</span></div>`;
+    }).join('')}</div>`;
+    wrap.appendChild(el); setTimeout(() => el.remove(), 4000);
   }
   $('#btn-mastery-emote').addEventListener('click', () => {
     if (!game || !game.ex || Date.now() - game.lastMasteryEmote < 6000) return;
     const snapshot = CTQ.Mastery.snapshot(game.masteryUser, game.cfg.lineups[game.mySide]);
-    if (!snapshot.showcase) { toast('Vào mục Thông thạo ở sảnh để chọn danh hiệu muốn khoe.'); return; }
     game.lastMasteryEmote = Date.now();
-    showMasteryEmote(snapshot, game.names[game.mySide]);
+    showMasteryEmote(snapshot, game.names[game.mySide], game.cfg.lineups[game.mySide]);
     if (game.mode === 'online' && room) room.send({ type: 'mastery-showcase', matchId: game.matchId, snapshot, emote: true });
   });
   readInviteFromURL();

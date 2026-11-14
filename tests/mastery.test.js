@@ -67,4 +67,20 @@ test('dữ liệu hỏng, storage bị chặn và snapshot đối thủ không l
   const snap = M.sanitizeSnapshot({ heroes: { 'g:unknown': { points: 999 }, 'g:quanvu': { points: -100 } }, showcase: { key: '<script>' } });
   assert.equal(snap.showcase, null); assert.equal(Object.keys(snap.heroes).length, 1); assert.equal(snap.heroes['g:quanvu'].points, 0);
 });
+test('khoe đủ Danh Tướng và Quân Sư của trận, không cần danh hiệu đại diện', () => {
+  const { M } = runtime();
+  const snapshot = M.snapshot(user, lineups.r);
+  assert.equal(snapshot.showcase, null);
+  assert.equal(Object.keys(snapshot.heroes).length, 2);
+  assert.equal(snapshot.heroes['g:quanvu'].points, 0); assert.equal(snapshot.heroes['s:giacatluong'].points, 0);
+});
+test('snapshot nhận về chỉ giữ đúng nhân vật đang dùng, không lấy danh hiệu khác thay thế', () => {
+  const { M } = runtime();
+  const snapshot = M.sanitizeSnapshot({ heroes: { 'g:quanvu': { points: 900 }, 's:giacatluong': { points: 3200 }, 'g:archimedes': { points: 99999 } }, showcase: { key: 'g:archimedes', points: 99999 } }, lineups.r);
+  assert.equal(Object.keys(snapshot.heroes).length, 2);
+  assert.equal(snapshot.heroes['g:quanvu'].points, 900); assert.equal(snapshot.heroes['s:giacatluong'].points, 3200);
+  assert.equal(snapshot.heroes['g:archimedes'], undefined);
+  const missing = M.sanitizeSnapshot(null, lineups.r);
+  assert.equal(Object.keys(missing.heroes).length, 2); assert.equal(missing.heroes['s:giacatluong'].points, 0);
+});
 console.log(`${passed} mastery checks passed`);

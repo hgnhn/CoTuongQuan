@@ -166,7 +166,7 @@
     const T = pset(state, tgt);
     const a = att.t;
     if (T.size) {
-      if (T.has('g_gotchan') && (a === 'R' || a === 'C')) return false;
+      if (T.has('g_gotchan') && a === 'R') return false;
       if (T.has('g_lansong')) { const r = rowOf(tsq); if (r === 4 || r === 5) return false; }
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
@@ -382,10 +382,7 @@
         if (crossed || P.has('p_linhhoat')) { add(r, c - 1); add(r, c + 1); }
         if (P.has('p_xungphong') && !crossed && onBoard(r + f, c) && !B[idx(r + f, c)]) add(r + 2 * f, c);
         if (crossed && P.has('g_tamdiep')) add(r - f, c);
-        if (crossed && P.has('g_khoinghia')) {
-          add(r - f, c);
-          for (const [dr, dc] of DIAG) add(r + dr, c + dc);
-        }
+        if (P.has('g_khoinghia')) for (const [dr, dc] of ALL8) add(r + dr, c + dc);
         break;
       }
     }

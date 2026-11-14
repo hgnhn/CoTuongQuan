@@ -18,10 +18,10 @@
     g_hosi: { name: 'Hổ Si', desc: 'Đi 1 ô theo mọi hướng, được ra khỏi cung nhưng phải ở sân nhà.' },
     g_vuotalps: { name: 'Vượt Alps', desc: 'Lướt chéo tối đa 3 ô (bị chặn bởi quân trên đường), ăn được quân đầu tiên gặp.' },
     g_vosong: { name: 'Vô Song', desc: 'Đi và ăn thêm 1 ô chéo theo mọi hướng.' },
-    g_gotchan: { name: 'Gót Chân Achilles', desc: 'Xe và Pháo không ăn được quân này.' },
+    g_gotchan: { name: 'Gót Chân Achilles', desc: 'Xe không ăn được quân này.' },
     g_thapchu: { name: 'Thập Tự Kỵ', desc: 'Đi và ăn thêm 1 ô chéo theo mọi hướng.' },
     g_lansong: { name: 'Lặn Sông', desc: 'Đứng ở 2 hàng sát sông thì không quân nào ăn được.' },
-    g_khoinghia: { name: 'Khởi Nghĩa', desc: 'Sau khi qua sông, đi và ăn 1 ô theo mọi hướng, kể cả lùi.' },
+    g_khoinghia: { name: 'Khởi Nghĩa', desc: 'Đi và ăn 1 ô theo mọi hướng (ngang, dọc, chéo, kể cả lùi) ở bất kỳ đâu trên bàn.' },
     g_tamdiep: { name: 'Lui Về Tam Điệp', desc: 'Tốt đã qua sông được lùi 1 ô.' },
   };
 
@@ -30,7 +30,7 @@
   CTQ.GENERALS = [
     { id: 'tranhungdao', name: 'Trần Hưng Đạo', short: 'Hưng Đạo', type: 'K', era: 'Đại Việt, thế kỷ 13',
       bio: 'Quốc công tiết chế, ba lần đánh bại quân Nguyên Mông.',
-      perks: ['g_xuatcung', 'k_khinhcong', 'g_hichtuongsi'], grants: { P: ['p_xungphong'] },
+      perks: ['g_xuatcung', 'k_khinhcong', 'k_batquai'],
       portrait: { region: 'vn', hat: 'mu-tuong', beard: 'long', robe: '#8c1c16' } },
     { id: 'leonidas', name: 'Leonidas', short: 'Leonidas', type: 'K', era: 'Sparta, Hy Lạp cổ đại',
       bio: 'Vua Sparta giữ ải Thermopylae trước đại quân Ba Tư.',
@@ -48,7 +48,7 @@
 
     { id: 'batrieu', name: 'Bà Triệu', short: 'Bà Triệu', type: 'E', era: 'Giao Châu, thế kỷ 3',
       bio: 'Nữ tướng cưỡi voi đánh quân Đông Ngô.',
-      perks: ['e_vuotgiang', 'g_cuoivoi', 'e_voigiay'],
+      perks: ['e_vuotgiang', 'g_cuoivoi'],
       portrait: { region: 'vn', hat: 'bun', beard: 'none', robe: '#c9a24a' } },
     { id: 'hannibal', name: 'Hannibal', short: 'Hannibal', type: 'E', era: 'Carthage, cổ đại',
       bio: 'Dẫn đoàn voi chiến vượt dãy Alps tiến đánh La Mã.',
@@ -57,7 +57,7 @@
 
     { id: 'lubo', name: 'Lữ Bố', short: 'Lữ Bố', type: 'R', era: 'Tam Quốc',
       bio: 'Đệ nhất mãnh tướng với Phương Thiên Hoạ Kích.',
-      perks: ['r_thietgiap', 'r_chienxa', 'r_phatran'],
+      perks: ['r_thietgiap', 'r_chienxa'],
       portrait: { region: 'tq', hat: 'pheasant', beard: 'none', robe: '#7a1a1a' } },
     { id: 'achilles', name: 'Achilles', short: 'Achilles', type: 'R', era: 'Hy Lạp, thành Troy',
       bio: 'Chiến binh bất khả xâm phạm, chỉ có gót chân là điểm yếu.',
@@ -88,7 +88,7 @@
       portrait: { region: 'vn', hat: 'khan', beard: 'none', robe: '#24485c' } },
     { id: 'spartacus', name: 'Spartacus', short: 'Spartacus', type: 'P', era: 'La Mã cổ đại',
       bio: 'Đấu sĩ nô lệ lãnh đạo cuộc khởi nghĩa lớn nhất chống La Mã.',
-      perks: ['g_khoinghia', 'p_linhhoat', 'p_lienhoan'],
+      perks: ['g_khoinghia', 'p_xungphong'],
       portrait: { region: 'med', hat: 'none', beard: 'stubble', robe: '#6b4a2a', hair: 'short' } },
   ];
 
@@ -109,7 +109,7 @@
   CTQ.STRATEGISTS = [
     { id: 'giacatluong', name: 'Gia Cát Lượng', era: 'Tam Quốc', bio: 'Ngoạ Long tiên sinh, quân sư Thục Hán.',
       passive: { name: 'Bát Trận Đồ', desc: 'Mã địch luôn bị cản chân và không nhảy dài được, kể cả khi có perk.', flag: 'battran' },
-      actives: [{ skill: 'phongtoa', uses: 2, name: 'Không Thành Kế' }, { skill: 'hoacong', cd: 5, name: 'Mượn Gió Đông' }],
+      actives: [{ skill: 'phongtoa', uses: 2, name: 'Không Thành Kế' }, { skill: 'hoacong', cd: 4, name: 'Mượn Gió Đông' }],
       portrait: { region: 'tq', hat: 'khan-luan', beard: 'goatee', robe: '#e8dcc0', fan: true } },
     { id: 'tumay', name: 'Tư Mã Ý', era: 'Tam Quốc', bio: 'Đại đô đốc nhà Nguỵ, kiên nhẫn chờ thời.',
       passive: { name: 'Kiên Thủ', desc: 'Quân của bạn đứng trong cung không bị Pháo và Mã ăn.', flag: 'kienthu' },
@@ -117,7 +117,7 @@
       portrait: { region: 'tq', hat: 'mu-quan', beard: 'long', robe: '#2b2b4a' } },
     { id: 'nguyentrai', name: 'Nguyễn Trãi', era: 'Đại Việt, thế kỷ 15', bio: 'Tác giả Bình Ngô đại cáo, mưu sĩ của Lê Lợi.',
       passive: { name: 'Bình Ngô Sách', desc: 'Mọi Tốt của bạn có thêm perk Liên Hoàn (Tốt đứng sát ngang nhau thì Xe, Mã, Pháo không ăn được).', grants: { P: ['p_lienhoan'] } },
-      actives: [{ skill: 'tamcong', uses: 1, name: 'Tâm Công' }, { skill: 'chieubinh', cd: 9 }],
+      actives: [{ skill: 'tamcong', uses: 1, name: 'Tâm Công' }, { skill: 'chieubinh', cd: 12 }],
       portrait: { region: 'vn', hat: 'mu-quan', beard: 'long', robe: '#24485c' } },
     { id: 'ngothinham', name: 'Ngô Thì Nhậm', era: 'Tây Sơn, thế kỷ 18', bio: 'Hiến kế lui về Tam Điệp trước khi đại phá quân Thanh.',
       passive: { name: 'Lui Về Tam Điệp', desc: 'Tốt của bạn được tiến 2 ô khi chưa qua sông (Xung Phong) và được lùi 1 ô sau khi qua sông.', grants: { P: ['g_tamdiep', 'p_xungphong'] } },

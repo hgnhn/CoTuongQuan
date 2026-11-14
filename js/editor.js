@@ -32,7 +32,7 @@
       note: 'Pháo ăn Mã thì Xe đứng ngay sau lưng Mã bị thiêu; Tốt đứng bên cạnh không bị ảnh hưởng. Pháo chết vì ăn Tử Sĩ thì không phát lửa.' },
     H: { focus: [7, 4], pieces: [[7, 4, 'H', 'r'], [6, 4, 'P', 'r'], [9, 3, 'K', 'r'], [0, 5, 'K', 'b']] },
     h_hanma: { focus: [2, 0], pieces: [[6, 0, 'H', 'r'], [4, 0, 'P', 'r'], [2, 0, 'C', 'b'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']],
-      note: 'Pháo Đen không còn ăn được Mã Đỏ. Tốt Đen cũng vậy.' },
+      note: 'Pháo Đen không còn ăn được Mã Đỏ. Tốt và Mã Đen cũng vậy.' },
     P: { focus: [6, 2], pieces: [[6, 2, 'P', 'r'], [9, 4, 'K', 'r'], [0, 3, 'K', 'b']] },
     p_lienhoan: { focus: [1, 3], pieces: [[4, 3, 'P', 'r'], [4, 4, 'P', 'r'], [1, 3, 'R', 'b'], [9, 4, 'K', 'r'], [0, 4, 'K', 'b']],
       note: 'Hai Tốt Đỏ đứng sát ngang nhau nên Xe Đen không ăn được.' },

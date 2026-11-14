@@ -56,7 +56,7 @@
 
     { id: 'lubo', name: 'Lữ Bố', short: 'Lữ Bố', type: 'R', era: 'Tam Quốc',
       bio: 'Đệ nhất mãnh tướng với Phương Thiên Hoạ Kích.',
-      perks: ['r_thietgiap', 'g_vosong', 'r_phatran'],
+      perks: ['r_thietgiap', 'g_vosong'],
       portrait: { region: 'tq', hat: 'pheasant', beard: 'none', robe: '#7a1a1a' } },
     { id: 'achilles', name: 'Achilles', short: 'Achilles', type: 'R', era: 'Hy Lạp, thành Troy',
       bio: 'Chiến binh bất khả xâm phạm, chỉ có gót chân là điểm yếu.',
@@ -108,7 +108,7 @@
   CTQ.STRATEGISTS = [
     { id: 'giacatluong', name: 'Gia Cát Lượng', era: 'Tam Quốc', bio: 'Ngoạ Long tiên sinh, quân sư Thục Hán.',
       passive: { name: 'Bát Trận Đồ', desc: 'Mã địch luôn bị cản chân và không nhảy dài được, kể cả khi có perk.', flag: 'battran' },
-      actives: [{ skill: 'phongtoa', uses: 1, name: 'Không Thành Kế' }, { skill: 'hoacong', cd: 4, name: 'Mượn Gió Đông' }],
+      actives: [{ skill: 'phongtoa', uses: 1, name: 'Không Thành Kế' }, { skill: 'hoacong', cd: 5, name: 'Mượn Gió Đông' }],
       portrait: { region: 'tq', hat: 'khan-luan', beard: 'goatee', robe: '#e8dcc0', fan: true } },
     { id: 'tumay', name: 'Tư Mã Ý', era: 'Tam Quốc', bio: 'Đại đô đốc nhà Nguỵ, kiên nhẫn chờ thời.',
       passive: { name: 'Kiên Thủ', desc: 'Quân của bạn đứng trong cung không bị Pháo và Mã ăn.', flag: 'kienthu' },
@@ -124,7 +124,7 @@
       portrait: { region: 'vn', hat: 'khan', beard: 'goatee', robe: '#5a3a20' } },
     { id: 'tontu', name: 'Tôn Tử', era: 'Xuân Thu', bio: 'Tác giả Binh pháp Tôn Tử.',
       passive: { name: 'Binh Quý Thần Tốc', desc: 'Mọi chiêu có hồi chiêu của bạn hồi nhanh hơn 1 lượt.', flag: 'thantoc' },
-      actives: [{ skill: 'phongtoa', cd: 7 }, { skill: 'hothe', cd: 4 }],
+      actives: [{ skill: 'phongtoa', cd: 5 }, { skill: 'hothe', cd: 3 }],
       portrait: { region: 'tq', hat: 'khan-luan', beard: 'long', robe: '#5a4a2a' } },
     { id: 'themistocles', name: 'Themistocles', era: 'Athens, Hy Lạp cổ đại', bio: 'Xây hạm đội Athens, đánh tan Ba Tư ở Salamis.',
       passive: { name: 'Bức Tường Gỗ', desc: 'Mọi Xe của bạn có thêm perk Thiết Giáp.', grants: { R: ['r_thietgiap'] } },

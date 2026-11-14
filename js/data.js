@@ -82,7 +82,7 @@
       { id: 'h_chienma', name: 'Chiến Mã',
         desc: 'Mã được đi thêm 1 ô thẳng. Tiến thẳng được ăn quân, các hướng khác chỉ tới ô trống.' },
       { id: 'h_hanma', name: 'Hãn Mã',
-        desc: 'Tốt và Pháo không ăn được Mã.' },
+        desc: 'Tốt, Pháo và Mã địch không ăn được Mã này.' },
       { id: 'h_otruy', name: 'Ô Truy',
         desc: 'Mã được nhảy dài theo chiều dọc: 3 ô dọc rồi 1 ô ngang, bị cản nếu 2 ô dọc đầu tiên có quân.' },
     ],

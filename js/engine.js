@@ -170,7 +170,7 @@
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
       if (T.has('a_kimcuong') && (a === 'C' || a === 'H' || a === 'P')) return false;
-      if (T.has('h_hanma') && (a === 'P' || a === 'C')) return false;
+      if (T.has('h_hanma') && (a === 'P' || a === 'C' || a === 'H')) return false;
       if (tgt.t === 'P' && T.has('p_lienhoan') && (a === 'R' || a === 'H' || a === 'C') && pawnLinked(state, tsq, tgt.s)) return false;
     }
     if (state.ex) {

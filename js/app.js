@@ -10,7 +10,7 @@
   const QUIET_LIMIT = 120; // 60 nước mỗi bên không ăn quân thì hoà
   const SETUP_TIME = { normal: 60, ex: 90 }; // giây chuẩn bị
   const COUNTDOWN = 3;
-  const PROTO = 2; // phiên bản giao thức trực tuyến
+  const PROTO = 3; // phiên bản giao thức/luật trực tuyến (Hoả Công 0.4.1)
 
   // ---------------- Lưu trữ ----------------
   const store = {
@@ -526,7 +526,11 @@
       if (msg && msg.type === 'hello' && !started) {
         started = true;
         closeDialog('started');
-        if (msg.v !== PROTO) { room.send({ type: 'old' }); }
+        if (msg.v !== PROTO) {
+          room.send({ type: 'old' });
+          onNetMessage({ type: 'old' });
+          return;
+        }
         room.peerName = String(msg.name || 'Đối thủ').slice(0, 20);
         hostSetup(Math.random() < 0.5 ? 'r' : 'b');
       } else onNetMessage(msg);
@@ -590,7 +594,8 @@
     if (!msg || !room) return;
     switch (msg.type) {
       case 'old':
-        toast('Đối thủ đang dùng bản game cũ. Nhờ họ tải lại trang.');
+        closeDialog(); leaveRoom(); show('menu');
+        toast('Hai bên khác phiên bản game. Cả hai hãy tải lại trang rồi tạo phòng mới.');
         break;
       case 'setup': { // khách nhận lệnh vào phòng chuẩn bị
         closeDialog('started');

@@ -1,5 +1,15 @@
 # Nhật ký cân bằng perk
 
+## Bản 0.4.1: giảm sức mạnh Hoả Công
+
+- Giữ perk Hoả Công thay vì thay perk mới, áp dụng cho cả Pháo thường và Archimedes.
+- Ô ngay sau mục tiêu vẫn thiêu mọi quân địch trừ Tướng; hai ô bên chỉ thiêu Tốt, Sĩ, Tượng, không còn thiêu Xe/Mã/Pháo.
+- Pháo phải sống sau đòn ăn mới phát lửa: ăn Sĩ có Tử Sĩ thì Pháo chết và không gây sát thương lan.
+- Sửa vị trí hai ô bên thành vuông góc với hướng bắn, kể cả đường chéo của Archimedes.
+- Miễn nhiễm Pháo và Hộ Thể vẫn chặn sát thương lan; lửa không thiêu quân mình hay Tướng. Chiêu Mượn Gió Đông của Gia Cát Lượng không thay đổi.
+- Mục tiêu: giữ khả năng trừng phạt đội hình tụ quân, giảm những đòn ăn lan nhiều quân chủ lực trong một lượt và cho Tử Sĩ khả năng chặn đòn nổ.
+- Kiểm chứng bằng các thế cờ kiểm thử cho hướng bắn, loại quân, miễn nhiễm, Tử Sĩ và hoàn tác. Chưa có số liệu tự đấu mới; điểm Hoả Công 0.60 và Archimedes 0.71 phía dưới là của bản 0.4.0, không đại diện cho luật mới.
+
 ## Phương pháp
 
 - **Nền tảng**: giá trị quân theo bảng truyền thống của cờ tướng (Xe 9, Pháo 4.5, Mã 4, Sĩ 2, Tượng 2, Tốt 1 → 2 khi qua sông). Pháo mạnh hơn ở đầu ván khi bàn đông quân, Mã mạnh dần về cuối ván khi bàn thoáng.

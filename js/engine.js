@@ -166,7 +166,7 @@
     const T = pset(state, tgt);
     const a = att.t;
     if (T.size) {
-      if (T.has('g_gotchan') && a !== 'P') return false;
+      if (T.has('g_gotchan') && (a === 'R' || a === 'C' || a === 'H')) return false;
       if (T.has('g_lansong')) { const r = rowOf(tsq); if (r === 4 || r === 5) return false; }
       if (T.has('r_thietgiap') && a === 'C') return false;
       if (T.has('g_thuai') && a === 'C') return false;
@@ -218,7 +218,7 @@
     switch (p.t) {
       case 'K': {
         const free = P.has('g_xuatcung');
-        const area = (tr, tc) => (free ? onBoard(tr, tc) && ownHalf(s, tr) : inPalace(s, tr, tc));
+        const area = (tr, tc) => inPalace(s, tr, tc) || (free && tc >= 3 && tc <= 5 && tr === (s === 'r' ? 6 : 3));
         for (const [dr, dc] of ORTH) {
           const tr = r + dr, tc = c + dc;
           addIf(tr, tc, area(tr, tc));
@@ -526,8 +526,11 @@
         if (mover.t === 'C' && MP.has('c_hoacong')) {
           const dr = Math.sign(rowOf(m.to) - rowOf(m.from)), dc = Math.sign(colOf(m.to) - colOf(m.from));
           const br = rowOf(m.to) + dr, bc = colOf(m.to) + dc;
-          if (onBoard(br, bc)) {
-            const b = idx(br, bc), q = B[b];
+          // ô ngay sau mục tiêu và 2 ô hai bên ô đó
+          for (const [sr, sc] of [[0, 0], [dc, dr], [-dc, -dr]]) {
+            const rr = br + sr, cc = bc + sc;
+            if (!onBoard(rr, cc)) continue;
+            const b = idx(rr, cc), q = B[b];
             if (q && q.s !== s && q.t !== 'K' && canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
           }
         }
@@ -537,7 +540,7 @@
           for (const [dr, dc] of ALL8) {
             if (!onBoard(r + dr, c + dc)) continue;
             const b = idx(r + dr, c + dc), q = B[b];
-            if (q && q.s !== s && q.t === 'P' && canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
+            if (q && q.s !== s && (q.t === 'P' || q.t === 'A' || q.t === 'E') && canCapture(state, mover, q, b)) { set(b, null); u.extra.push(q); }
           }
         }
       }

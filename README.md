@@ -2,7 +2,7 @@
 
 Cờ tướng có đội hình tuỳ chỉnh. Ở sảnh, người chơi trang bị **1 perk cho mỗi loại quân** (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt), mỗi loại có 3–4 perk để chọn. Khi trận đã bắt đầu thì đội hình bị khoá, không đổi được nữa.
 
-Địa chỉ chính thức: **https://cotuongquan.bananalab.id.vn**
+Địa chỉ hiện tại: **https://hgnhn.github.io/CoTuongQuan/**
 
 ## Tính năng
 
@@ -26,15 +26,11 @@ python3 -m http.server 8000
 
 Rồi vào http://localhost:8000.
 
-## Deploy lên tên miền riêng (GitHub Pages)
+## Deploy bằng GitHub Pages
 
 1. Trên GitHub: **Settings → Pages → Build and deployment → Deploy from a branch**, chọn nhánh `main`, thư mục `/ (root)`.
-2. Ô **Custom domain** điền `cotuongquan.bananalab.id.vn` (file `CNAME` trong repo đã có sẵn), bật **Enforce HTTPS** khi GitHub cấp xong chứng chỉ.
-3. Ở nơi quản lý DNS của `bananalab.id.vn`, thêm bản ghi:
-
-   | Loại  | Tên           | Giá trị           |
-   |-------|---------------|-------------------|
-   | CNAME | `cotuongquan` | `hgnhn.github.io` |
+2. Để trống **Custom domain** khi dùng URL `https://hgnhn.github.io/CoTuongQuan/`. Repo hiện không cần file `CNAME`.
+3. Sau deploy, mở URL trên và kiểm tra phiên bản đầu nhật ký cập nhật. Nếu còn cache HTML cũ, thêm query mới vào URL (ví dụ `?v=0.5.2`).
 
 ## Đăng nhập
 
@@ -42,12 +38,12 @@ Mặc định game dùng **hồ sơ cục bộ**: người chơi đặt tên k�
 
 1. Tạo dự án tại https://console.firebase.google.com, thêm một Web app.
 2. **Authentication → Sign-in method** → bật Google.
-3. **Authentication → Settings → Authorized domains** → thêm `cotuongquan.bananalab.id.vn`.
+3. **Authentication → Settings → Authorized domains** → thêm `hgnhn.github.io`.
 4. Dán cấu hình web app vào `firebase` trong [`js/config.js`](js/config.js).
 
 ## Kết nối trực tuyến
 
-Trận trực tuyến là kết nối ngang hàng WebRTC qua [PeerJS](https://peerjs.com) (đóng gói sẵn trong `vendor/`). Máy chủ môi giới công khai của PeerJS chỉ giúp hai trình duyệt tìm thấy nhau; nước đi truyền thẳng giữa hai người và mỗi bên tự kiểm tra tính hợp lệ. Có thể tự dựng máy chủ môi giới (`npx peer --port 9000`) rồi khai báo ở `peer` trong `js/config.js`.
+Trận trực tuyến dùng WebRTC qua [PeerJS](https://peerjs.com). Máy chủ môi giới chỉ giúp hai trình duyệt tìm nhau; để nối qua NAT/tường lửa chặt cần **TURN còn hoạt động**. TURN mặc định cũ của PeerJS đã dừng; chuyển sang GitHub Pages không tự giải quyết việc này. Cấu hình TURN thật ở `iceServers` trong `js/config.js`; hiện vẫn để `null` cho tới khi chủ game có credential. Hướng dẫn tạo tài khoản miễn phí, cấu hình và kiểm tra nằm trong **[`docs/online.md`](docs/online.md)**.
 
 ## Cân bằng perk
 
@@ -74,6 +70,7 @@ Chân dung được vẽ bằng SVG trong [`js/portraits.js`](js/portraits.js). 
 
 ```bash
 node tests/engine.test.js
+node tests/net.test.js
 node tests/mastery.test.js
 node tests/mastery-perks.test.js
 node tests/mastery-server.test.js

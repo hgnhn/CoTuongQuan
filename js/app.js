@@ -527,12 +527,14 @@
       const sh = $('#share-link');
       if (sh) sh.addEventListener('click', () => navigator.share({ title: 'Cờ Tướng Quân', text: inviteText }).catch(() => {}));
     } catch (e) {
+      if (room !== myRoom) return;
       closeDialog();
       leaveRoom();
       dialog({ title: 'Không tạo được phòng', body: `<p>${esc(e.message)}</p>`, buttons: [{ label: 'Đóng', value: 'ok', primary: true }] });
       return;
     }
     room.on('message', (msg) => {
+      if (room !== myRoom) return;
       if (msg && msg.type === 'hello' && !started) {
         started = true;
         closeDialog('started');
@@ -566,6 +568,7 @@
     dialog({ title: 'Đang vào phòng ' + code + '…', body: '<p class="muted">Đang tìm phòng và kết nối với chủ phòng.</p>', buttons: [{ label: 'Huỷ', value: 'cancel' }] })
       .then(() => { if (!started && room === myRoom) leaveRoom(); });
     room.on('message', (msg) => {
+      if (room !== myRoom) return;
       if (msg && msg.type === 'setup') started = true;
       onNetMessage(msg);
     });
@@ -598,8 +601,15 @@
   }
 
   function bindRoomEvents() {
-    room.on('close', () => opponentLeft('Kết nối với đối thủ đã đóng.'));
-    room.on('error', (e) => { if ((game && game.mode === 'online') || setup) toast(e.message); });
+    const activeRoom = room;
+    activeRoom.on('close', () => { if (room === activeRoom) opponentLeft('Kết nối với đối thủ đã đóng.'); });
+    activeRoom.on('error', (e) => {
+      if (room !== activeRoom) return;
+      if (setup || (current === 'game' && game?.mode === 'online')) { toast(e.message); return; }
+      // Ví dụ "phòng đầy" đến sau khi DataChannel mở: không để khách kẹt ở hộp chờ.
+      closeDialog('failed'); leaveRoom();
+      dialog({ title: 'Không kết nối được phòng', body: `<p>${esc(e.message)}</p>`, buttons: [{ label: 'Đóng', value: 'ok', primary: true }] });
+    });
   }
 
   function onNetMessage(msg) {

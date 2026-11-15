@@ -3,7 +3,7 @@
  * ĐĂNG NHẬP
  * - Để bật đăng nhập Google thật, tạo một dự án Firebase (miễn phí), bật
  *   Authentication > Sign-in method > Google, thêm tên miền chạy game
- *   (cotuongquan.bananalab.id.vn) vào Authorized domains, rồi dán cấu hình web app vào `firebase` bên dưới.
+ *   (hgnhn.github.io) vào Authorized domains, rồi dán cấu hình web app vào `firebase` bên dưới.
  * - Khi `firebase` để null, game dùng hồ sơ cục bộ: người chơi đặt tên kỳ thủ
  *   và tài khoản chỉ lưu trên trình duyệt này (phù hợp để thử nghiệm).
  */
@@ -11,11 +11,16 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CONFIG = {
     // Địa chỉ chính thức, dùng để tạo link mời khi mở game từ file cục bộ
-    siteUrl: 'https://cotuongquan.bananalab.id.vn/',
+    siteUrl: 'https://hgnhn.github.io/CoTuongQuan/',
     // Máy chủ môi giới PeerJS cho chế độ trực tuyến. null = máy chủ công khai miễn phí
     // của PeerJS. Có thể tự dựng (npx peer --port 9000) rồi khai báo:
     // peer: { host: 'peer.example.com', port: 443, path: '/', secure: true },
     peer: null,
+    // Dán mảng iceServers do dịch vụ TURN cấp ở đây cho toàn bộ người chơi.
+    // null = chỉ STUN, hỗ trợ P2P trực tiếp; không bảo đảm nối qua NAT/tường lửa chặt.
+    // Cần TURN đang hoạt động, nên có turns:...:443?transport=tcp. Xem docs/online.md.
+    // Đây là thông tin TURN dành cho trình duyệt, KHÔNG phải API key quản trị dịch vụ.
+    iceServers: null,
     firebase: null,
     // Bật sau khi cấu hình Firebase Auth và deploy server/ theo docs/mastery.md.
     masteryCloud: { enabled: false, region: 'asia-southeast1' },

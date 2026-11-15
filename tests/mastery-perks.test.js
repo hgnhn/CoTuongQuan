@@ -92,7 +92,8 @@ test('chiêu không hạ quân và Tâm Công không có thưởng ăn quân', (
 test('Hoả Công của Pháo thường không bị nhận nhầm là perk Quân Sư', () => {
   const f = fixture('quanvu', 'tontu', [[7,0,'C','r'],[6,0,'P','r'],[4,0,'H','b'],[3,0,'R','b'],[3,1,'P','b']], { C: 'c_hoacong' });
   const [g, s] = play(f, { from: sq(7,0), to: sq(4,0) });
-  assert.equal(g.points, 0); assert.equal(s.points, 30); assert.equal(s.perkCaptures, 0);
+  // Luật 0.5.1 chỉ thiêu quân sau lưng, không còn thiêu Tốt ở ô bên.
+  assert.equal(g.points, 0); assert.equal(s.points, 20); assert.equal(s.captures, 2); assert.equal(s.perkCaptures, 0);
 });
 test('đấu máy áp dụng 50% cho cả điểm cơ bản và thưởng perk', () => {
   const f = fixture('archimedes', 'tontu', [[9,0,'C','r',true],[8,1,'P','r'],[7,2,'H','b']]);

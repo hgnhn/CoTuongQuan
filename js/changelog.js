@@ -5,6 +5,16 @@
   const CTQ = (root.CTQ = root.CTQ || {});
   CTQ.CHANGELOG = [
     {
+      v: '0.5.2', date: '15/11/2026', title: 'Sửa kết nối phòng và chuyển sang GitHub Pages',
+      items: [
+        'Bỏ phụ thuộc hai TURN mặc định PeerJS đã ngừng hoạt động; thêm cấu hình iceServers cho dịch vụ chuyển tiếp riêng.',
+        'Giải phóng lượt khách chưa kết nối được để có thể thử lại cùng mã phòng; dọn kết nối và bộ đếm khi huỷ/lỗi.',
+        'Không để sự kiện phòng cũ ảnh hưởng phòng mới; báo rõ phòng đầy, lỗi môi giới và lỗi kết nối trực tiếp.',
+        'Cập nhật địa chỉ mặc định và link chính thức sang hgnhn.github.io/CoTuongQuan/.',
+        'Để nối qua hai mạng chặn P2P vẫn cần cấu hình TURN còn hoạt động; xem hướng dẫn kết nối trong repo.',
+      ],
+    },
+    {
       v: '0.5.1', date: '15/11/2026', title: 'Hoả Công và cân bằng theo cả đội hình',
       items: [
         'Hoả Công chỉ còn thiêu quân địch đứng ngay sau lưng mục tiêu theo hướng bắn (trừ Tướng); 2 ô bên không còn bị lửa lan.',
